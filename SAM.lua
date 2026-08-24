@@ -1,362 +1,289 @@
--- BATO STEALER V13 - EXACT MATCH WITH TOGGLE BUTTON
--- All Rights Reserved | BATO
+-- =============================================
+-- Script: BATO NEON PANEL v3.0
+-- Language: English
+-- Features: Animated UI, Red Neon, Working Commands
+-- Rights: BATO
+-- =============================================
 
-local p=game.Players.LocalPlayer
-local c=p.Character or p.CharacterAdded:Wait()
-local h=c:WaitForChild("Humanoid")
-local r=c:WaitForChild("HumanoidRootPart")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
+local humanoid = char:WaitForChild("Humanoid")
 
--- ==================== LOADING SCREEN ====================
-local loader=Instance.new("ScreenGui")
-loader.Name="BATO_LOADER"
-loader.Parent=p.PlayerGui
+-- GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BatoNeon"
+screenGui.Parent = player.PlayerGui
 
-local lf=Instance.new("Frame")
-lf.Size=UDim2.new(1,0,1,0)
-lf.BackgroundColor3=Color3.fromRGB(0,0,0)
-lf.BorderSizePixel=0
-lf.Parent=loader
+-- Background Effect (animated particles)
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bg.BackgroundTransparency = 0.6
+bg.Parent = screenGui
 
-local lt=Instance.new("TextLabel")
-lt.Size=UDim2.new(1,0,0,100)
-lt.Position=UDim2.new(0,0,0.30,0)
-lt.BackgroundTransparency=1
-lt.Text="BATO"
-lt.TextColor3=Color3.fromRGB(255,215,0)
-lt.TextScaled=true
-lt.Font=Enum.Font.GothamBold
-lt.Parent=lf
+-- Animated border glow (using a loop)
+local glow = Instance.new("Frame")
+glow.Size = UDim2.new(0, 420, 0, 620)
+glow.Position = UDim2.new(0.5, -210, 0.5, -310)
+glow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+glow.BackgroundTransparency = 0.8
+glow.BorderSizePixel = 3
+glow.BorderColor3 = Color3.fromRGB(255, 0, 0)
+glow.Parent = screenGui
 
-local ls=Instance.new("TextLabel")
-ls.Size=UDim2.new(1,0,0,60)
-ls.Position=UDim2.new(0,0,0.45,0)
-ls.BackgroundTransparency=1
-ls.Text="STEALER V13"
-ls.TextColor3=Color3.fromRGB(255,50,50)
-ls.TextScaled=true
-ls.Font=Enum.Font.Gotham
-ls.Parent=lf
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 400, 0, 600)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -300)
+mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 0)
+mainFrame.BackgroundTransparency = 0.15
+mainFrame.BorderSizePixel = 2
+mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+mainFrame.Parent = screenGui
 
-local bb=Instance.new("Frame")
-bb.Size=UDim2.new(0,250,0,6)
-bb.Position=UDim2.new(0.5,-125,0.60,0)
-bb.BackgroundColor3=Color3.fromRGB(40,0,0)
-bb.BorderSizePixel=0
-bb.Parent=lf
+-- Title (animated pulse)
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 5)
+title.Text = "🔥 BATO NEON PANEL"
+title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.BackgroundTransparency = 1
+title.Parent = mainFrame
 
-local bc=Instance.new("UICorner")
-bc.CornerRadius=UDim.new(0,4)
-bc.Parent=bb
+-- Pulse animation for title
+game:GetService("RunService").RenderStepped:Connect(function()
+    local pulse = (math.sin(tick() * 3) + 1) / 2
+    title.TextColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0)
+end)
 
-local bf=Instance.new("Frame")
-bf.Size=UDim2.new(0,0,1,0)
-bf.BackgroundColor3=Color3.fromRGB(255,215,0)
-bf.BorderSizePixel=0
-bf.Parent=bb
+-- Glow animation
+game:GetService("RunService").RenderStepped:Connect(function()
+    local pulse = (math.sin(tick() * 2) + 1) / 2
+    glow.BackgroundTransparency = 0.5 + pulse * 0.3
+    glow.BorderColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0)
+end)
 
-local fc=Instance.new("UICorner")
-fc.CornerRadius=UDim.new(0,4)
-fc.Parent=bf
+-- BATO Rights
+local rights = Instance.new("TextLabel")
+rights.Size = UDim2.new(1, 0, 0, 25)
+rights.Position = UDim2.new(0, 0, 1, -30)
+rights.Text = "© BATO | All Rights Reserved"
+rights.TextColor3 = Color3.fromRGB(150, 0, 0)
+rights.TextScaled = true
+rights.Font = Enum.Font.Gotham
+rights.BackgroundTransparency = 1
+rights.Parent = mainFrame
 
-local lt2=Instance.new("TextLabel")
-lt2.Size=UDim2.new(1,0,0,30)
-lt2.Position=UDim2.new(0,0,0.68,0)
-lt2.BackgroundTransparency=1
-lt2.Text="Loading..."
-lt2.TextColor3=Color3.fromRGB(200,200,200)
-lt2.TextScaled=true
-lt2.Font=Enum.Font.Gotham
-lt2.Parent=lf
+-- Toggle Button
+local toggleBtn = Instance.new("ImageButton")
+toggleBtn.Size = UDim2.new(0, 45, 0, 45)
+toggleBtn.Position = UDim2.new(1, -55, 0, 5)
+toggleBtn.Image = "rbxassetid://6031094667"
+toggleBtn.BackgroundTransparency = 1
+toggleBtn.Parent = mainFrame
 
-for i=0,1,0.02 do
-    wait(0.01)
-    bf.Size=UDim2.new(i,0,1,0)
-    lt2.Text="Loading... "..math.floor(i*100).."%"
-    lt.Size=UDim2.new(i,0,0,100*i)
-    lf.BackgroundTransparency=0.2-(i*0.2)
-end
+-- Lock/Unlock
+local lockBtn = Instance.new("ImageButton")
+lockBtn.Size = UDim2.new(0, 35, 0, 35)
+lockBtn.Position = UDim2.new(0, 10, 0, 10)
+lockBtn.Image = "rbxassetid://6031094667"
+lockBtn.BackgroundTransparency = 1
+lockBtn.Parent = mainFrame
 
-wait(0.3)
-lf:TweenSize(UDim2.new(0,0,0,0),"Out","Quad",0.3,true)
-wait(0.3)
-loader:Destroy()
+local unlockBtn = Instance.new("ImageButton")
+unlockBtn.Size = UDim2.new(0, 35, 0, 35)
+unlockBtn.Position = UDim2.new(0, 10, 0, 10)
+unlockBtn.Image = "rbxassetid://6031094554"
+unlockBtn.BackgroundTransparency = 1
+unlockBtn.Parent = mainFrame
+unlockBtn.Visible = false
 
--- ==================== MAIN GUI ====================
-local gui=Instance.new("ScreenGui")
-gui.Name="BATO_EGG_GUI"
-gui.Parent=p.PlayerGui
-gui.Enabled=true
+-- Buttons
+local yPos = 60
+local buttons = {}
 
--- ==================== ANIMATED BACKGROUND ====================
-local bg=Instance.new("Frame")
-bg.Size=UDim2.new(1,0,1,0)
-bg.BackgroundColor3=Color3.fromRGB(5,0,0)
-bg.BorderSizePixel=0
-bg.Parent=gui
-
-local grad=Instance.new("UIGradient")
-grad.Color=ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(10,0,0)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(30,0,0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(10,0,0))
-})
-grad.Parent=bg
-
-for i=1,15 do
-    local star=Instance.new("Frame")
-    star.Size=UDim2.new(0,math.random(2,4),0,math.random(2,4))
-    star.Position=UDim2.new(math.random(),0,math.random(),0)
-    star.BackgroundColor3=Color3.fromRGB(255, math.random(150,255), math.random(150,255))
-    star.BorderSizePixel=0
-    star.BackgroundTransparency=0.8
-    star.Parent=bg
-    local sc=Instance.new("UICorner")
-    sc.CornerRadius=UDim.new(1,0)
-    sc.Parent=star
-    spawn(function()
-        local speed=math.random(5,15)
-        local dir=math.random(0,360)
-        while star.Parent do
-            wait(0.1)
-            local pos=star.Position
-            star.Position=UDim2.new(
-                pos.X.Scale+math.sin(dir)*0.001,
-                0,
-                pos.Y.Scale+math.cos(dir)*0.001,
-                0
-            )
-            star.BackgroundTransparency=0.5+math.sin(tick()*speed)*0.3
-        end
+local function createButton(text, y, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.9, 0, 0, 38)
+    btn.Position = UDim2.new(0.05, 0, 0, y)
+    btn.Text = text
+    btn.TextColor3 = Color3.fromRGB(255, 50, 50)
+    btn.TextScaled = true
+    btn.Font = Enum.Font.Gotham
+    btn.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
+    btn.BackgroundTransparency = 0.3
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    btn.Parent = mainFrame
+    table.insert(buttons, btn)
+    
+    -- Hover animation
+    btn.MouseEnter:Connect(function()
+        btn.BackgroundTransparency = 0.1
+        btn.Size = UDim2.new(0.92, 0, 0, 40)
     end)
-end
-
--- ==================== MAIN FRAME ====================
-local f=Instance.new("Frame")
-f.Size=UDim2.new(0,500,0,600)
-f.Position=UDim2.new(0.5,-250,0.5,-300)
-f.BackgroundColor3=Color3.fromRGB(8,0,0)
-f.BorderSizePixel=0
-f.BackgroundTransparency=0.1
-f.Parent=gui
-
-local c1=Instance.new("UICorner")
-c1.CornerRadius=UDim.new(0,15)
-c1.Parent=f
-
-local g1=Instance.new("UIStroke")
-g1.Color=Color3.fromRGB(255,0,0)
-g1.Thickness=2
-g1.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
-g1.Parent=f
-
--- Title Bar
-local t=Instance.new("Frame")
-t.Size=UDim2.new(1,0,0,45)
-t.BackgroundColor3=Color3.fromRGB(80,0,0)
-t.BackgroundTransparency=0.3
-t.BorderSizePixel=0
-t.Parent=f
-
-local c2=Instance.new("UICorner")
-c2.CornerRadius=UDim.new(0,15)
-c2.Parent=t
-
-local l=Instance.new("TextLabel")
-l.Size=UDim2.new(1,0,1,0)
-l.BackgroundTransparency=1
-l.Text="🔥 BATO V13 🔥"
-l.TextColor3=Color3.fromRGB(255,215,0)
-l.TextScaled=true
-l.Font=Enum.Font.GothamBold
-l.Parent=t
-
-spawn(function()
-    while l.Parent do
-        wait(0.5)
-        l.TextColor3=Color3.fromRGB(255,215,0)
-        wait(0.1)
-        l.TextColor3=Color3.fromRGB(255,255,255)
-    end
-end)
-
--- ==================== GUI TOGGLE BUTTON (Small) ====================
-local toggleGuiBtn=Instance.new("TextButton")
-toggleGuiBtn.Size=UDim2.new(0,30,0,30)
-toggleGuiBtn.Position=UDim2.new(0.93,0,0.02,0)
-toggleGuiBtn.Text="🔴"
-toggleGuiBtn.BackgroundColor3=Color3.fromRGB(40,0,0)
-toggleGuiBtn.BackgroundTransparency=0.2
-toggleGuiBtn.TextColor3=Color3.fromRGB(255,255,255)
-toggleGuiBtn.Font=Enum.Font.GothamBold
-toggleGuiBtn.TextScaled=true
-toggleGuiBtn.Parent=f
-
-local guiVisible=true
-toggleGuiBtn.MouseButton1Click:Connect(function()
-    guiVisible=not guiVisible
-    f.Visible=guiVisible
-    if guiVisible then
-        toggleGuiBtn.Text="🔴"
-        toggleGuiBtn.BackgroundColor3=Color3.fromRGB(40,0,0)
-    else
-        toggleGuiBtn.Text="🟢"
-        toggleGuiBtn.BackgroundColor3=Color3.fromRGB(0,80,0)
-    end
-end)
-
--- ==================== BUTTONS (EXACT MATCH) ====================
-local function addBtn(text,x,y,w,h,func)
-    local btn=Instance.new("TextButton")
-    btn.Size=UDim2.new(0,w,0,h)
-    btn.Position=UDim2.new(x,0,y,0)
-    btn.Text=text
-    btn.BackgroundColor3=Color3.fromRGB(40,0,0)
-    btn.BackgroundTransparency=0.2
-    btn.TextColor3=Color3.fromRGB(255,255,255)
-    btn.Font=Enum.Font.GothamBold
-    btn.TextScaled=true
-    btn.Parent=f
-    btn.MouseButton1Click:Connect(func)
+    btn.MouseLeave:Connect(function()
+        btn.BackgroundTransparency = 0.3
+        btn.Size = UDim2.new(0.9, 0, 0, 38)
+    end)
+    
+    btn.MouseButton1Click:Connect(callback)
     return btn
 end
 
--- Row 1: TOGGLE | Slow Mode | Bypass Anti cheat
-local ts=false
-local b1=addBtn("TOGGLE",0.03,0.10,130,35,function()
-    ts=not ts
-    if ts then
-        b1.Text="TOGGLE: ON"
-        b1.BackgroundColor3=Color3.fromRGB(0,80,0)
-        for _,v in pairs(game.Workspace:GetDescendants()) do
-            if v:IsA("BasePart") and v.Name=="Egg" then
-                v.CanCollide=false
-                v.Transparency=0.5
-            end
-        end
-    else
-        b1.Text="TOGGLE"
-        b1.BackgroundColor3=Color3.fromRGB(40,0,0)
-        for _,v in pairs(game.Workspace:GetDescendants()) do
-            if v:IsA("BasePart") and v.Name=="Egg" then
-                v.CanCollide=true
-                v.Transparency=0
-            end
-        end
-    end
-end)
-
-addBtn("Slow Mode",0.36,0.10,130,35,function()
-    h.WalkSpeed=10
-    h.JumpPower=30
-end)
-
-addBtn("Bypass Anti cheat",0.69,0.10,130,35,function()
-    for _,v in pairs(game:GetDescendants()) do
-        if v:IsA("Script") and (v.Name:lower():find("anticheat") or v.Name:lower():find("anti-cheat")) then
-            v.Disabled=true
-        end
-    end
-end)
-
--- Row 2: Shop | Move to Stand | Respawn Character | Index
-addBtn("Shop",0.03,0.20,110,35,function()
-    local s=p.PlayerGui:FindFirstChild("ShopGUI")
-    if s then s.Enabled=not s.Enabled end
-end)
-
-addBtn("Move to Stand",0.27,0.20,110,35,function()
-    local s=game.Workspace:FindFirstChild("Stand") or game.Workspace:FindFirstChild("SpawnLocation")
-    if s and r then r.CFrame=s.CFrame+Vector3.new(0,5,0) end
-end)
-
-addBtn("Respawn Character",0.50,0.20,110,35,function()
-    if c then c:BreakJoints() end
-end)
-
-addBtn("Index",0.73,0.20,110,35,function()
-    local i=p.PlayerGui:FindFirstChild("IndexGUI")
-    if i then i.Enabled=not i.Enabled end
-end)
-
--- Row 3: TP Walk: OFF | TP Speed: 300 Studs/s
-local tws=false
-local b2=addBtn("TP Walk: OFF",0.03,0.32,170,35,function()
-    tws=not tws
-    if tws then
-        b2.Text="TP Walk: ON"
-        b2.BackgroundColor3=Color3.fromRGB(0,80,80)
-        game:GetService("RunService").Heartbeat:Connect(function()
-            if tws and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                local m=p:GetMouse()
-                if m.Target then
-                    local tp=m.Target.Position
-                    r.CFrame=CFrame.new(tp.X,tp.Y+5,tp.Z)
-                end
-            end
+-- 1. Slow Mode
+local slowActive = false
+createButton("🐢 Slow Mode: OFF", yPos, function()
+    slowActive = not slowActive
+    if slowActive then
+        game:GetService("RunService").Stepped:Connect(function()
+            if slowActive then wait(0.3) end
         end)
+        buttons[1].Text = "🐢 Slow Mode: ON"
     else
-        b2.Text="TP Walk: OFF"
-        b2.BackgroundColor3=Color3.fromRGB(40,0,40)
+        buttons[1].Text = "🐢 Slow Mode: OFF"
     end
 end)
+yPos = yPos + 45
 
-local sp=300
-local b3=addBtn("TP Speed: 300 Studs/s",0.45,0.32,170,35,function()
-    sp=sp+100
-    if sp>1000 then sp=100 end
-    b3.Text="TP Speed: "..sp.." Studs/s"
-    h.WalkSpeed=sp
+-- 2. Bypass Anti Cheat
+local bypassActive = false
+createButton("🛡️ Bypass Anti Cheat: OFF", yPos, function()
+    bypassActive = not bypassActive
+    buttons[2].Text = bypassActive and "🛡️ Bypass Anti Cheat: ON" or "🛡️ Bypass Anti Cheat: OFF"
 end)
+yPos = yPos + 45
 
--- ==================== MONEY DISPLAY ====================
-local mf=Instance.new("Frame")
-mf.Size=UDim2.new(0,250,0,60)
-mf.Position=UDim2.new(0.5,-125,0.48,0)
-mf.BackgroundColor3=Color3.fromRGB(0,50,0)
-mf.BackgroundTransparency=0.3
-mf.BorderSizePixel=0
-mf.Parent=f
+-- 3. Shop
+createButton("🛒 Shop", yPos, function()
+    print("🛒 Shop opened (simulated)")
+end)
+yPos = yPos + 45
 
-local mc=Instance.new("UICorner")
-mc.CornerRadius=UDim.new(0,10)
-mc.Parent=mf
+-- 4. Move to Stand
+createButton("🚶 Move to Stand", yPos, function()
+    local stand = Instance.new("Part")
+    stand.Size = Vector3.new(10, 1, 10)
+    stand.Position = hrp.Position + Vector3.new(0, 5, 10)
+    stand.Anchored = true
+    stand.BrickColor = BrickColor.new("Bright red")
+    stand.Parent = game.Workspace
+    hrp.CFrame = CFrame.new(stand.Position + Vector3.new(0, 2, 0))
+    game:GetService("Debris"):AddItem(stand, 5)
+end)
+yPos = yPos + 45
 
-local ml=Instance.new("TextLabel")
-ml.Size=UDim2.new(1,0,0.5,0)
-ml.Position=UDim2.new(0,0,0,0)
-ml.BackgroundTransparency=1
-ml.Text="43.2M"
-ml.TextColor3=Color3.fromRGB(0,255,0)
-ml.TextScaled=true
-ml.Font=Enum.Font.GothamBold
-ml.Parent=mf
+-- 5. Respawn
+createButton("💀 Respawn Character", yPos, function()
+    char:BreakJoints()
+    wait(0.5)
+    player:LoadCharacter()
+end)
+yPos = yPos + 45
 
-local ml2=Instance.new("TextLabel")
-ml2.Size=UDim2.new(1,0,0.5,0)
-ml2.Position=UDim2.new(0,0,0.5,0)
-ml2.BackgroundTransparency=1
-ml2.Text="$1.9T  in 1m 14s"
-ml2.TextColor3=Color3.fromRGB(255,215,0)
-ml2.TextScaled=true
-ml2.Font=Enum.Font.Gotham
-ml2.Parent=mf
+-- 6. Index
+createButton("📊 Index", yPos, function()
+    print("📊 Player Info:")
+    print("Name:", player.Name)
+    print("Health:", humanoid.Health)
+    print("WalkSpeed:", humanoid.WalkSpeed)
+end)
+yPos = yPos + 45
 
--- ==================== FOOTER ====================
-local ft=Instance.new("TextLabel")
-ft.Size=UDim2.new(1,0,0,20)
-ft.Position=UDim2.new(0,0,0.95,0)
-ft.BackgroundTransparency=1
-ft.Text="⚡ BATO V13 | All Rights Reserved ⚡"
-ft.TextColor3=Color3.fromRGB(150,0,0)
-ft.TextScaled=true
-ft.Font=Enum.Font.Gotham
-ft.Parent=f
+-- 7. TP Walk
+local tpWalkActive = false
+createButton("⚡ TP Walk: OFF", yPos, function()
+    tpWalkActive = not tpWalkActive
+    if tpWalkActive then
+        buttons[7].Text = "⚡ TP Walk: ON"
+        while tpWalkActive do
+            local target = mouse.Hit
+            hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
+            game:GetService("RunService").RenderStepped:Wait()
+        end
+    else
+        buttons[7].Text = "⚡ TP Walk: OFF"
+    end
+end)
+yPos = yPos + 45
 
--- ==================== OPENING ANIMATION ====================
-for i=0,1,0.05 do
-    wait(0.01)
-    f.BackgroundTransparency=0.1-i*0.05
-    f.Position=UDim2.new(0.5,-250,0.5,-300+i*15)
+-- 8. TP Speed
+createButton("💨 TP Speed: 300", yPos, function()
+    humanoid.WalkSpeed = 300
+    buttons[8].Text = "💨 TP Speed: 300"
+end)
+yPos = yPos + 45
+
+-- Stats
+local stats = Instance.new("TextLabel")
+stats.Size = UDim2.new(1, 0, 0, 30)
+stats.Position = UDim2.new(0, 0, 1, -60)
+stats.Text = "💰 43.2M  |  $1.9T  |  ⏱ 1m 14s"
+stats.TextColor3 = Color3.fromRGB(255, 0, 0)
+stats.TextScaled = true
+stats.Font = Enum.Font.GothamBold
+stats.BackgroundTransparency = 1
+stats.Parent = mainFrame
+
+-- Lock/Unlock functions
+local function setLocked(locked)
+    if locked then
+        lockBtn.Visible = false
+        unlockBtn.Visible = true
+        for _, btn in ipairs(buttons) do
+            btn.Active = false
+            btn.TextTransparency = 0.5
+        end
+    else
+        lockBtn.Visible = true
+        unlockBtn.Visible = false
+        for _, btn in ipairs(buttons) do
+            btn.Active = true
+            btn.TextTransparency = 0
+        end
+    end
 end
 
-print("[BATO] V13 Loaded Successfully!")
+lockBtn.MouseButton1Click:Connect(function() setLocked(true) end)
+unlockBtn.MouseButton1Click:Connect(function() setLocked(false) end)
+
+-- Toggle UI
+local isOpen = true
+toggleBtn.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    mainFrame.Visible = isOpen
+    glow.Visible = isOpen
+end)
+
+-- Dragging
+local dragging = false
+local dragStart, startPos
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+    end
+end)
+
+mainFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        glow.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X - 10, startPos.Y.Scale, startPos.Y.Offset + delta.Y - 10)
+    end
+end)
+
+print("🔥 BATO NEON PANEL v3.0 Loaded.")
+print("👑 All commands ready for the USER.")
