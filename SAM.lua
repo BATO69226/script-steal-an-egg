@@ -1,7 +1,7 @@
 -- =============================================
--- Script: BATO NEON PANEL v3.0
+-- Script: BATO MINI PANEL v4.0
 -- Language: English
--- Features: Animated UI, Red Neon, Working Commands
+-- Features: Compact UI, Open Sound, Single Lock Toggle
 -- Rights: BATO
 -- =============================================
 
@@ -13,41 +13,47 @@ local humanoid = char:WaitForChild("Humanoid")
 
 -- GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BatoNeon"
+screenGui.Name = "BatoMini"
 screenGui.Parent = player.PlayerGui
+
+-- Sound (when UI opens)
+local openSound = Instance.new("Sound")
+openSound.SoundId = "rbxassetid://9120393705" -- نغمة جميلة (يمكنك تغيير الـ ID)
+openSound.Volume = 0.5
+openSound.Parent = screenGui
 
 -- Background Effect (animated particles)
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bg.BackgroundTransparency = 0.6
+bg.BackgroundTransparency = 0.5
 bg.Parent = screenGui
 
--- Animated border glow (using a loop)
+-- Glow border (smaller)
 local glow = Instance.new("Frame")
-glow.Size = UDim2.new(0, 420, 0, 620)
-glow.Position = UDim2.new(0.5, -210, 0.5, -310)
+glow.Size = UDim2.new(0, 320, 0, 460)
+glow.Position = UDim2.new(0.5, -160, 0.5, -230)
 glow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 glow.BackgroundTransparency = 0.8
 glow.BorderSizePixel = 3
 glow.BorderColor3 = Color3.fromRGB(255, 0, 0)
 glow.Parent = screenGui
 
--- Main Frame
+-- Main Frame (smaller)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 400, 0, 600)
-mainFrame.Position = UDim2.new(0.5, -200, 0.5, -300)
+mainFrame.Size = UDim2.new(0, 300, 0, 440)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -220)
 mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 0)
 mainFrame.BackgroundTransparency = 0.15
 mainFrame.BorderSizePixel = 2
 mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
 mainFrame.Parent = screenGui
 
--- Title (animated pulse)
+-- Title (smaller, animated pulse)
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 50)
+title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 5)
-title.Text = "🔥 BATO NEON PANEL"
+title.Text = "🔥 BATO PANEL"
 title.TextColor3 = Color3.fromRGB(255, 0, 0)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
@@ -69,46 +75,61 @@ end)
 
 -- BATO Rights
 local rights = Instance.new("TextLabel")
-rights.Size = UDim2.new(1, 0, 0, 25)
-rights.Position = UDim2.new(0, 0, 1, -30)
-rights.Text = "© BATO | All Rights Reserved"
+rights.Size = UDim2.new(1, 0, 0, 20)
+rights.Position = UDim2.new(0, 0, 1, -25)
+rights.Text = "© BATO"
 rights.TextColor3 = Color3.fromRGB(150, 0, 0)
 rights.TextScaled = true
 rights.Font = Enum.Font.Gotham
 rights.BackgroundTransparency = 1
 rights.Parent = mainFrame
 
--- Toggle Button
+-- Toggle Button (Hide/Show UI)
 local toggleBtn = Instance.new("ImageButton")
-toggleBtn.Size = UDim2.new(0, 45, 0, 45)
-toggleBtn.Position = UDim2.new(1, -55, 0, 5)
-toggleBtn.Image = "rbxassetid://6031094667"
+toggleBtn.Size = UDim2.new(0, 35, 0, 35)
+toggleBtn.Position = UDim2.new(1, -45, 0, 5)
+toggleBtn.Image = "rbxassetid://6031094667" -- قفل
 toggleBtn.BackgroundTransparency = 1
 toggleBtn.Parent = mainFrame
 
--- Lock/Unlock
-local lockBtn = Instance.new("ImageButton")
-lockBtn.Size = UDim2.new(0, 35, 0, 35)
-lockBtn.Position = UDim2.new(0, 10, 0, 10)
-lockBtn.Image = "rbxassetid://6031094667"
-lockBtn.BackgroundTransparency = 1
-lockBtn.Parent = mainFrame
+-- Single Lock/Unlock Button (toggle)
+local lockToggleBtn = Instance.new("ImageButton")
+lockToggleBtn.Size = UDim2.new(0, 30, 0, 30)
+lockToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+lockToggleBtn.Image = "rbxassetid://6031094667" -- قفل (مغلق)
+lockToggleBtn.BackgroundTransparency = 1
+lockToggleBtn.Parent = mainFrame
 
-local unlockBtn = Instance.new("ImageButton")
-unlockBtn.Size = UDim2.new(0, 35, 0, 35)
-unlockBtn.Position = UDim2.new(0, 10, 0, 10)
-unlockBtn.Image = "rbxassetid://6031094554"
-unlockBtn.BackgroundTransparency = 1
-unlockBtn.Parent = mainFrame
-unlockBtn.Visible = false
+-- State
+local isLocked = false
 
--- Buttons
-local yPos = 60
+-- Function to toggle lock
+local function toggleLock()
+    isLocked = not isLocked
+    if isLocked then
+        lockToggleBtn.Image = "rbxassetid://6031094554" -- فتح
+        for _, btn in ipairs(buttons) do
+            btn.Active = false
+            btn.TextTransparency = 0.5
+        end
+    else
+        lockToggleBtn.Image = "rbxassetid://6031094667" -- قفل
+        for _, btn in ipairs(buttons) do
+            btn.Active = true
+            btn.TextTransparency = 0
+        end
+    end
+end
+
+lockToggleBtn.MouseButton1Click:Connect(toggleLock)
+
+-- Buttons (smaller)
+local yPos = 50
 local buttons = {}
 
 local function createButton(text, y, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 38)
+    btn.Size = UDim2.new(0.9, 0, 0, 30)
     btn.Position = UDim2.new(0.05, 0, 0, y)
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(255, 50, 50)
@@ -124,11 +145,11 @@ local function createButton(text, y, callback)
     -- Hover animation
     btn.MouseEnter:Connect(function()
         btn.BackgroundTransparency = 0.1
-        btn.Size = UDim2.new(0.92, 0, 0, 40)
+        btn.Size = UDim2.new(0.92, 0, 0, 32)
     end)
     btn.MouseLeave:Connect(function()
         btn.BackgroundTransparency = 0.3
-        btn.Size = UDim2.new(0.9, 0, 0, 38)
+        btn.Size = UDim2.new(0.9, 0, 0, 30)
     end)
     
     btn.MouseButton1Click:Connect(callback)
@@ -137,37 +158,37 @@ end
 
 -- 1. Slow Mode
 local slowActive = false
-createButton("🐢 Slow Mode: OFF", yPos, function()
+createButton("🐢 Slow: OFF", yPos, function()
     slowActive = not slowActive
     if slowActive then
         game:GetService("RunService").Stepped:Connect(function()
             if slowActive then wait(0.3) end
         end)
-        buttons[1].Text = "🐢 Slow Mode: ON"
+        buttons[1].Text = "🐢 Slow: ON"
     else
-        buttons[1].Text = "🐢 Slow Mode: OFF"
+        buttons[1].Text = "🐢 Slow: OFF"
     end
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 2. Bypass Anti Cheat
 local bypassActive = false
-createButton("🛡️ Bypass Anti Cheat: OFF", yPos, function()
+createButton("🛡️ Bypass: OFF", yPos, function()
     bypassActive = not bypassActive
-    buttons[2].Text = bypassActive and "🛡️ Bypass Anti Cheat: ON" or "🛡️ Bypass Anti Cheat: OFF"
+    buttons[2].Text = bypassActive and "🛡️ Bypass: ON" or "🛡️ Bypass: OFF"
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 3. Shop
 createButton("🛒 Shop", yPos, function()
     print("🛒 Shop opened (simulated)")
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 4. Move to Stand
-createButton("🚶 Move to Stand", yPos, function()
+createButton("🚶 Move Stand", yPos, function()
     local stand = Instance.new("Part")
-    stand.Size = Vector3.new(10, 1, 10)
+    stand.Size = Vector3.new(8, 1, 8)
     stand.Position = hrp.Position + Vector3.new(0, 5, 10)
     stand.Anchored = true
     stand.BrickColor = BrickColor.new("Bright red")
@@ -175,24 +196,23 @@ createButton("🚶 Move to Stand", yPos, function()
     hrp.CFrame = CFrame.new(stand.Position + Vector3.new(0, 2, 0))
     game:GetService("Debris"):AddItem(stand, 5)
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 5. Respawn
-createButton("💀 Respawn Character", yPos, function()
+createButton("💀 Respawn", yPos, function()
     char:BreakJoints()
     wait(0.5)
     player:LoadCharacter()
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 6. Index
 createButton("📊 Index", yPos, function()
     print("📊 Player Info:")
     print("Name:", player.Name)
     print("Health:", humanoid.Health)
-    print("WalkSpeed:", humanoid.WalkSpeed)
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 7. TP Walk
 local tpWalkActive = false
@@ -209,57 +229,40 @@ createButton("⚡ TP Walk: OFF", yPos, function()
         buttons[7].Text = "⚡ TP Walk: OFF"
     end
 end)
-yPos = yPos + 45
+yPos = yPos + 37
 
 -- 8. TP Speed
-createButton("💨 TP Speed: 300", yPos, function()
+createButton("💨 Speed: 300", yPos, function()
     humanoid.WalkSpeed = 300
-    buttons[8].Text = "💨 TP Speed: 300"
+    buttons[8].Text = "💨 Speed: 300"
 end)
-yPos = yPos + 45
 
--- Stats
+-- Stats (smaller)
 local stats = Instance.new("TextLabel")
-stats.Size = UDim2.new(1, 0, 0, 30)
-stats.Position = UDim2.new(0, 0, 1, -60)
-stats.Text = "💰 43.2M  |  $1.9T  |  ⏱ 1m 14s"
+stats.Size = UDim2.new(1, 0, 0, 25)
+stats.Position = UDim2.new(0, 0, 1, -50)
+stats.Text = "💰 43.2M | $1.9T | ⏱ 1m"
 stats.TextColor3 = Color3.fromRGB(255, 0, 0)
 stats.TextScaled = true
 stats.Font = Enum.Font.GothamBold
 stats.BackgroundTransparency = 1
 stats.Parent = mainFrame
 
--- Lock/Unlock functions
-local function setLocked(locked)
-    if locked then
-        lockBtn.Visible = false
-        unlockBtn.Visible = true
-        for _, btn in ipairs(buttons) do
-            btn.Active = false
-            btn.TextTransparency = 0.5
-        end
-    else
-        lockBtn.Visible = true
-        unlockBtn.Visible = false
-        for _, btn in ipairs(buttons) do
-            btn.Active = true
-            btn.TextTransparency = 0
-        end
-    end
-end
-
-lockBtn.MouseButton1Click:Connect(function() setLocked(true) end)
-unlockBtn.MouseButton1Click:Connect(function() setLocked(false) end)
-
--- Toggle UI
+-- Toggle UI (Hide/Show with sound)
 local isOpen = true
 toggleBtn.MouseButton1Click:Connect(function()
     isOpen = not isOpen
     mainFrame.Visible = isOpen
     glow.Visible = isOpen
+    if isOpen then
+        openSound:Play() -- تشغيل الصوت عند الفتح
+        toggleBtn.Image = "rbxassetid://6031094667" -- قفل
+    else
+        toggleBtn.Image = "rbxassetid://6031094554" -- فتح
+    end
 end)
 
--- Dragging
+-- Dragging (smaller)
 local dragging = false
 local dragStart, startPos
 
@@ -285,5 +288,5 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
-print("🔥 BATO NEON PANEL v3.0 Loaded.")
+print("🔥 BATO MINI PANEL v4.0 Loaded.")
 print("👑 All commands ready for the USER.")
