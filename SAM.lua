@@ -1,6 +1,6 @@
 -- =============================================
--- Script: BATO ULTIMATE UI v10.2
--- Features: Egg Steal & Return, Clean UI
+-- Script: BATO ULTIMATE UI v10.4
+-- Features: Disable/Enable Hack + Auto Break Trees + Egg
 -- Admin: Mohammad_kurdish73
 -- Rights: BATO
 -- =============================================
@@ -27,6 +27,11 @@ for _, name in ipairs(adminList) do
 end
 
 -- ============================
+-- حالة الهاك
+-- ============================
+local hackEnabled = true  -- الهاك شغال افتراضياً
+
+-- ============================
 -- إنشاء الواجهة
 -- ============================
 local screenGui = Instance.new("ScreenGui")
@@ -34,7 +39,7 @@ screenGui.Name = "BatoUltimate"
 screenGui.Parent = player.PlayerGui
 
 -- ============================
--- العين الحمراء (ثابتة)
+-- العين الحمراء
 -- ============================
 local eyeFrame = Instance.new("Frame")
 eyeFrame.Size = UDim2.new(0, 50, 0, 50)
@@ -53,8 +58,8 @@ eye.Parent = eyeFrame
 -- الإطار الرئيسي
 -- ============================
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 520, 0, 480)
-mainFrame.Position = UDim2.new(0.5, -260, 0.5, -240)
+mainFrame.Size = UDim2.new(0, 520, 0, 560) -- زيادة الارتفاع
+mainFrame.Position = UDim2.new(0.5, -260, 0.5, -280)
 mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 10)
 mainFrame.BackgroundTransparency = 0.15
 mainFrame.BorderSizePixel = 2
@@ -132,7 +137,7 @@ local sections = {
 }
 
 local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 75, 0, 400)
+sidebar.Size = UDim2.new(0, 75, 0, 460)
 sidebar.Position = UDim2.new(0, 0, 0.1, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(15, 0, 15)
 sidebar.BackgroundTransparency = 0.3
@@ -159,6 +164,7 @@ for i, section in ipairs(sections) do
     table.insert(sidebarButtons, btn)
 
     btn.MouseButton1Click:Connect(function()
+        if not hackEnabled then return end -- منع التنقل إذا الهاك معطل
         currentSection = section.id
         updateVisibleSection()
         for _, b in ipairs(sidebarButtons) do
@@ -171,7 +177,7 @@ for i, section in ipairs(sections) do
 end
 
 -- ============================
--- المحتوى (الأزرار)
+-- المحتوى
 -- ============================
 local contentFrame = Instance.new("Frame")
 contentFrame.Size = UDim2.new(0.8, 0, 0.85, 0)
@@ -189,7 +195,7 @@ local function createSection(id)
     return frame
 end
 
--- دالة إضافة زر
+-- دالة إضافة زر (مع التحقق من حالة الهاك)
 local function addButton(parent, text, y, color, callback)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0.9, 0, 0, 28)
@@ -206,7 +212,7 @@ local function addButton(parent, text, y, color, callback)
     table.insert(allButtons, btn)
 
     btn.MouseEnter:Connect(function()
-        if not isLocked and btn.Active then
+        if not isLocked and btn.Active and hackEnabled then
             btn.BackgroundTransparency = 0.1
             btn.Size = UDim2.new(0.92, 0, 0, 30)
         end
@@ -217,7 +223,7 @@ local function addButton(parent, text, y, color, callback)
     end)
 
     btn.MouseButton1Click:Connect(function()
-        if isLocked or not btn.Active then return end
+        if isLocked or not btn.Active or not hackEnabled then return end
         callback()
     end)
     return btn
@@ -326,11 +332,34 @@ addButton(killFrame, "💥 Explode", y, Color3.fromRGB(255, 0, 0), function()
 end)
 
 -- ============================
--- 5. قسم Misc (مع أزرار البيضة)
+-- 5. قسم Misc
 -- ============================
 local miscFrame = createSection("misc")
 y = 5
 
+-- ============================
+-- 🔴 زر إيقاف الهاك
+-- ============================
+addButton(miscFrame, "🔴 Disable Hack", y, Color3.fromRGB(255, 0, 0), function()
+    hackEnabled = false
+    mainFrame.Visible = false
+    eyeFrame.Visible = false
+    print("🔴 Hack disabled. UI hidden.")
+end)
+y = y + 35
+
+-- ============================
+-- 🟢 زر تشغيل الهاك
+-- ============================
+addButton(miscFrame, "🟢 Enable Hack", y, Color3.fromRGB(0, 255, 0), function()
+    hackEnabled = true
+    mainFrame.Visible = true
+    eyeFrame.Visible = true
+    print("🟢 Hack enabled. UI shown.")
+end)
+y = y + 35
+
+-- باقي الأزرار
 addButton(miscFrame, "🌟 Fly (5s)", y, Color3.fromRGB(200, 0, 200), function()
     local fly = Instance.new("BodyVelocity")
     fly.MaxForce = Vector3.new(1, 1, 1) * 1000
@@ -348,11 +377,7 @@ addButton(miscFrame, "🔄 Respawn", y, Color3.fromRGB(200, 0, 200), function()
 end)
 y = y + 35
 
--- ============================
--- 🔥 أزرار سرقة البيضة وإرجاعها
--- ============================
 addButton(miscFrame, "🥚 Steal Egg", y, Color3.fromRGB(255, 165, 0), function()
-    -- محاكاة سرقة البيضة
     local egg = Instance.new("Part")
     egg.Size = Vector3.new(2, 3, 2)
     egg.Shape = Enum.PartType.Ball
@@ -361,26 +386,22 @@ addButton(miscFrame, "🥚 Steal Egg", y, Color3.fromRGB(255, 165, 0), function(
     egg.Anchored = true
     egg.Parent = game.Workspace
     
-    -- تأثير سرقة
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxassetid://9120393705"
     sound.Volume = 1
     sound.Parent = egg
     sound:Play()
     
-    -- تحريك البيضة إلى يد اللاعب
     for i = 1, 20 do
         egg.CFrame = CFrame.new(hrp.Position + Vector3.new(0, 3, 0) + Vector3.new(math.sin(i/2), i/5, math.cos(i/2)))
         wait(0.05)
     end
-    
     egg:Destroy()
     print("🥚 Egg stolen!")
 end)
 y = y + 35
 
 addButton(miscFrame, "🔄 Return Egg", y, Color3.fromRGB(0, 255, 255), function()
-    -- محاكاة إرجاع البيضة إلى يد اللاعب
     local egg = Instance.new("Part")
     egg.Size = Vector3.new(2, 3, 2)
     egg.Shape = Enum.PartType.Ball
@@ -389,23 +410,46 @@ addButton(miscFrame, "🔄 Return Egg", y, Color3.fromRGB(0, 255, 255), function
     egg.Anchored = true
     egg.Parent = game.Workspace
     
-    -- تأثير إرجاع
     local sound = Instance.new("Sound")
     sound.SoundId = "rbxassetid://9120393705"
     sound.Volume = 1
     sound.Parent = egg
     sound:Play()
     
-    -- تحريك البيضة إلى يد اللاعب
     for i = 1, 30 do
         local t = i / 30
         local pos = Vector3.new(0, 10, 0) * (1 - t) + Vector3.new(0, 3, 0) * t
         egg.CFrame = CFrame.new(hrp.Position + pos)
         wait(0.03)
     end
-    
     egg:Destroy()
     print("🔄 Egg returned to hand!")
+end)
+y = y + 35
+
+addButton(miscFrame, "🪓 Auto Break Trees", y, Color3.fromRGB(34, 139, 34), function()
+    print("🪓 Starting Auto Break Trees...")
+    local treesBroken = 0
+    for _, obj in ipairs(game.Workspace:GetDescendants()) do
+        if obj:IsA("Part") or obj:IsA("Model") then
+            local name = obj.Name:lower()
+            if name:find("tree") or name:find("wood") or name:find("log") or name:find("branch") then
+                pcall(function()
+                    obj:Destroy()
+                    treesBroken = treesBroken + 1
+                    wait(0.05)
+                end)
+            end
+        end
+    end
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://9120393705"
+    sound.Volume = 1
+    sound.Parent = game.Workspace
+    sound:Play()
+    wait(0.5)
+    sound:Destroy()
+    print("🪓 Trees broken: " .. treesBroken)
 end)
 y = y + 35
 
@@ -473,6 +517,6 @@ end)
 -- ============================
 -- تشغيل السكربت
 -- ============================
-print("🔥 BATO ULTIMATE UI v10.2 Loaded.")
+print("🔥 BATO ULTIMATE UI v10.4 Loaded.")
 print("👑 Admin: Mohammad_kurdish73")
-print("🥚 Egg Steal & Return buttons added.")
+print("🔴 Disable Hack / 🟢 Enable Hack added.")
