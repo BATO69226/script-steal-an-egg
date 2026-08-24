@@ -1,235 +1,277 @@
 -- =====================================
--- SAM v7.0 - BAT0 (واجهة تعمل بإجبار)
--- Game: Steal an Egg
+-- SAM v9.1 - BATO RED EDITION
+-- جميع الحقوق محفوظة لـ BATO
 -- =====================================
 
 local p = game:GetService("Players").LocalPlayer
 local gui = Instance.new("ScreenGui")
-gui.Name = "SAM_GUI"
+gui.Name = "BATO_GUI"
 gui.ResetOnSpawn = false
 gui.Parent = p:WaitForChild("PlayerGui")
 
--- ===== الواجهة الرئيسية =====
+-- ===== الواجهة الرئيسية (باللون الأحمر) =====
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 280, 0, 340)
-frame.Position = UDim2.new(0.5, -140, 0.5, -170)
-frame.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
+frame.Size = UDim2.new(0, 380, 0, 480)
+frame.Position = UDim2.new(0.5, -190, 0.5, -240)
+frame.BackgroundColor3 = Color3.fromRGB(20, 0, 0) -- أحمر داكن
 frame.BackgroundTransparency = 0.05
 frame.BorderSizePixel = 3
-frame.BorderColor3 = Color3.fromRGB(255, 215, 0)
+frame.BorderColor3 = Color3.fromRGB(255, 0, 0) -- أحمر فاتح
 frame.ClipsDescendants = true
 frame.Active = true
 frame.Draggable = true
 frame.Parent = gui
 
--- خلفية متدرجة
+-- ===== خلفية متدرجة (أحمر + أسود) =====
 local grad = Instance.new("UIGradient")
 grad.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 60)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 20))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 0, 0))
 })
 grad.Parent = frame
 
--- ===== زر إظهار/إخفاء الواجهة (في أعلى الشاشة) =====
-local toggleBtn = Instance.new("TextButton")
-toggleBtn.Size = UDim2.new(0, 120, 0, 30)
-toggleBtn.Position = UDim2.new(0.5, -60, 0, 5)
-toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-toggleBtn.Text = "⚡ BAT0 ⚡"
-toggleBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
-toggleBtn.TextScaled = true
-toggleBtn.Font = Enum.Font.Bold
-toggleBtn.BorderSizePixel = 2
-toggleBtn.BorderColor3 = Color3.fromRGB(255, 255, 255)
-toggleBtn.Parent = gui
+-- ===== خلفية شعار BATO (مكرر كنقش) =====
+local bgImage = Instance.new("ImageLabel")
+bgImage.Size = UDim2.new(1, 0, 1, 0)
+bgImage.BackgroundTransparency = 1
+bgImage.Image = "rbxassetid://123456789" -- ضع رابط صورة شعار BATO هنا
+bgImage.ImageColor3 = Color3.fromRGB(255, 0, 0) -- أحمر
+bgImage.ImageTransparency = 0.85 -- شفاف جداً
+bgImage.Parent = frame
 
--- ===== محتوى الواجهة =====
+-- ===== العنوان =====
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 35)
+title.Size = UDim2.new(1, 0, 0, 50)
 title.Position = UDim2.new(0, 0, 0, 5)
 title.BackgroundTransparency = 1
-title.Text = "⚡ BAT0 ⚡"
-title.TextColor3 = Color3.fromRGB(255, 215, 0)
+title.Text = "⚡ BATO ULTIMATE ⚡"
+title.TextColor3 = Color3.fromRGB(255, 50, 50) -- أحمر فاتح
 title.TextScaled = true
 title.Font = Enum.Font.Bold
 title.Parent = frame
 
+-- ===== زر الإغلاق =====
 local closeBtn = Instance.new("TextButton")
-closeBtn.Size = UDim2.new(0, 25, 0, 25)
-closeBtn.Position = UDim2.new(1, -30, 0, 5)
-closeBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
 closeBtn.Text = "✕"
 closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 closeBtn.TextScaled = true
 closeBtn.Font = Enum.Font.Bold
 closeBtn.Parent = frame
 closeBtn.MouseButton1Click:Connect(function()
-    frame.Visible = false
-    toggleBtn.Visible = true
+    gui:Destroy()
 end)
 
--- ===== خيارات البوت =====
-local options = {
-    {"🚀 Speed", "Speed"},
-    {"✈️ Fly", "Fly"},
-    {"🥚 AutoSteal", "AutoSteal"},
-    {"🛡️ AFK", "AntiAFK"},
+-- ===== الأزرار الرئيسية =====
+local buttons = {
+    {"🛡️ Bypass", "Bypass"},
+    {"🚀 TP Walk", "TPWalk"},
+    {"🏃 TP Speed", "TPSpeed"},
+    {"📍 Move to Stand", "MoveStand"},
+    {"🔄 Respawn", "Respawn"},
+    {"💰 Auto Farm", "AutoFarm"},
+    {"🥚 Auto Steal", "AutoSteal"},
     {"👁️ ESP", "ESP"}
 }
 
-local buttons = {}
 local toggles = {}
+local btnRefs = {}
 
-for i, opt in ipairs(options) do
+for i, b in ipairs(buttons) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 120, 0, 30)
-    btn.Position = UDim2.new(0.05 + (i-1)%2 * 0.5, 0, 0.15 + math.floor((i-1)/2) * 0.17, 0)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
-    btn.Text = opt[1] .. " [OFF]"
-    btn.TextColor3 = Color3.fromRGB(220, 220, 255)
+    btn.Size = UDim2.new(0, 150, 0, 30)
+    btn.Position = UDim2.new(0.05 + (i-1)%2 * 0.5, 0, 0.13 + math.floor((i-1)/2) * 0.12, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(80, 0, 0) -- أحمر داكن
+    btn.Text = b[1] .. " [OFF]"
+    btn.TextColor3 = Color3.fromRGB(255, 150, 150) -- أحمر فاتح
     btn.TextScaled = true
     btn.Font = Enum.Font.Bold
     btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.fromRGB(100, 100, 150)
+    btn.BorderColor3 = Color3.fromRGB(255, 0, 0)
     btn.Parent = frame
-    buttons[opt[2]] = btn
-    toggles[opt[2]] = false
+    btnRefs[b[2]] = btn
+    toggles[b[2]] = false
 end
 
--- زر إعادة التعيين
+-- ===== زر إعادة التعيين =====
 local resetBtn = Instance.new("TextButton")
-resetBtn.Size = UDim2.new(0.8, 0, 0, 30)
-resetBtn.Position = UDim2.new(0.1, 0, 0.85, 0)
-resetBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-resetBtn.Text = "🔄 Reset All"
+resetBtn.Size = UDim2.new(0.8, 0, 0, 35)
+resetBtn.Position = UDim2.new(0.1, 0, 0.88, 0)
+resetBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+resetBtn.Text = "🔄 إيقاف الكل (BATO)"
 resetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 resetBtn.TextScaled = true
 resetBtn.Font = Enum.Font.Bold
 resetBtn.Parent = frame
+
+-- ===== حقوق الملكية =====
+local rights = Instance.new("TextLabel")
+rights.Size = UDim2.new(1, 0, 0, 20)
+rights.Position = UDim2.new(0, 0, 0, 0.95)
+rights.BackgroundTransparency = 1
+rights.Text = "🔥 جميع الحقوق محفوظة لـ BATO 🔥"
+rights.TextColor3 = Color3.fromRGB(255, 50, 50)
+rights.TextScaled = true
+rights.Font = Enum.Font.Bold
+rights.Parent = frame
 
 -- ===== دوال الميزات =====
 local char = p.Character or p.CharacterAdded:Wait()
 local hum = char:WaitForChild("Humanoid")
 local root = char:WaitForChild("HumanoidRootPart")
 
-local function setSpeed(state)
-    hum.WalkSpeed = state and 50 or 16
-end
-
-local function setFly(state)
-    local bv = root:FindFirstChild("BodyVelocity")
-    if state then
-        if not bv then
-            bv = Instance.new("BodyVelocity")
-            bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
-            bv.Parent = root
+local function toggleFeature(feature)
+    toggles[feature] = not toggles[feature]
+    local state = toggles[feature]
+    local btn = btnRefs[feature]
+    if btn then
+        btn.Text = btn.Text:gsub("%[.-%]", state and "[ON]" or "[OFF]")
+        btn.BackgroundColor3 = state and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(80, 0, 0) -- أحمر فاتح/داكن
+    end
+    
+    -- تنفيذ الميزات
+    if feature == "Bypass" then
+        p:Chat("🛡️ Bypass: " .. (state and "ON" or "OFF"))
+    elseif feature == "TPWalk" then
+        hum.WalkSpeed = state and 100 or 16
+        p:Chat("🚀 TP Walk: " .. (state and "ON (100)" or "OFF"))
+    elseif feature == "TPSpeed" then
+        if state then
+            hum.WalkSpeed = hum.WalkSpeed * 2
+        else
+            hum.WalkSpeed = 16
         end
-        game:GetService("RunService").Heartbeat:Connect(function()
-            if toggles["Fly"] then bv.Velocity = Vector3.new(0, 20, 0) end
-        end)
-    else
-        if bv then bv:Destroy() end
-    end
-end
-
-local function setAutoSteal(state)
-    if state then
-        spawn(function()
-            while toggles["AutoSteal"] do
-                for _, o in pairs(workspace:GetDescendants()) do
-                    if o:IsA("Part") and o.Name:lower():find("egg") then
-                        root.CFrame = CFrame.new(o.Position)
-                        wait(0.2)
-                        local cd = o:FindFirstChild("ClickDetector")
-                        if cd then fireclickdetector(cd) end
-                        wait(0.3)
-                    end
-                end
-                wait(0.5)
-            end
-        end)
-    end
-end
-
-local function setAntiAFK(state)
-    if state then
-        spawn(function()
-            while toggles["AntiAFK"] do
-                hum:MoveTo(root.Position + Vector3.new(0,0,1))
-                wait(30)
-                hum:MoveTo(root.Position + Vector3.new(0,0,-1))
-                wait(30)
-            end
-        end)
-    end
-end
-
-local function setESP(state)
-    if state then
-        spawn(function()
-            while toggles["ESP"] do
-                for _, o in pairs(workspace:GetDescendants()) do
-                    if o:IsA("Part") and o.Name:lower():find("egg") then
-                        local hl = o:FindFirstChild("Highlight")
-                        if not hl then
-                            hl = Instance.new("Highlight")
-                            hl.FillColor = Color3.fromRGB(255, 0, 0)
-                            hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-                            hl.Parent = o
+        p:Chat("🏃 TP Speed: " .. (state and "ON" or "OFF"))
+    elseif feature == "MoveStand" then
+        if state then
+            local standPos = Vector3.new(0, 10, 0)
+            root.CFrame = CFrame.new(standPos)
+            p:Chat("📍 تم الانتقال إلى Stand")
+            toggles["MoveStand"] = false
+            btn.Text = "📍 Move to Stand [OFF]"
+            btn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+        end
+    elseif feature == "Respawn" then
+        if state then
+            p.Character = nil
+            p:LoadCharacter()
+            p:Chat("🔄 تم إعادة البعث")
+            toggles["Respawn"] = false
+            btn.Text = "🔄 Respawn [OFF]"
+            btn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+        end
+    elseif feature == "AutoFarm" then
+        if state then
+            spawn(function()
+                while toggles["AutoFarm"] do
+                    for _, o in pairs(workspace:GetDescendants()) do
+                        if o:IsA("Part") and (o.Name:lower():find("egg") or o.Name:lower():find("coin")) then
+                            root.CFrame = CFrame.new(o.Position)
+                            wait(0.2)
+                            local cd = o:FindFirstChild("ClickDetector")
+                            if cd then fireclickdetector(cd) end
+                            wait(0.3)
                         end
                     end
+                    wait(0.5)
                 end
-                wait(1)
-            end
-        end)
-    else
-        for _, o in pairs(workspace:GetDescendants()) do
-            if o:IsA("Part") and o.Name:lower():find("egg") then
-                local hl = o:FindFirstChild("Highlight")
-                if hl then hl:Destroy() end
+            end)
+        end
+        p:Chat("💰 Auto Farm: " .. (state and "ON" or "OFF"))
+    elseif feature == "AutoSteal" then
+        if state then
+            spawn(function()
+                while toggles["AutoSteal"] do
+                    for _, o in pairs(workspace:GetDescendants()) do
+                        if o:IsA("Part") and o.Name:lower():find("egg") then
+                            root.CFrame = CFrame.new(o.Position)
+                            wait(0.2)
+                            local cd = o:FindFirstChild("ClickDetector")
+                            if cd then fireclickdetector(cd) end
+                            wait(0.3)
+                        end
+                    end
+                    wait(0.5)
+                end
+            end)
+        end
+        p:Chat("🥚 Auto Steal: " .. (state and "ON" or "OFF"))
+    elseif feature == "ESP" then
+        if state then
+            spawn(function()
+                while toggles["ESP"] do
+                    for _, o in pairs(workspace:GetDescendants()) do
+                        if o:IsA("Part") and o.Name:lower():find("egg") then
+                            local hl = o:FindFirstChild("Highlight")
+                            if not hl then
+                                hl = Instance.new("Highlight")
+                                hl.FillColor = Color3.fromRGB(255, 0, 0)
+                                hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                hl.Parent = o
+                            end
+                        end
+                    end
+                    wait(1)
+                end
+            end)
+        else
+            for _, o in pairs(workspace:GetDescendants()) do
+                if o:IsA("Part") and o.Name:lower():find("egg") then
+                    local hl = o:FindFirstChild("Highlight")
+                    if hl then hl:Destroy() end
+                end
             end
         end
+        p:Chat("👁️ ESP: " .. (state and "ON" or "OFF"))
     end
 end
 
 -- ===== ربط الأزرار =====
-for opt, btn in pairs(buttons) do
+for feature, btn in pairs(btnRefs) do
     btn.MouseButton1Click:Connect(function()
-        toggles[opt] = not toggles[opt]
-        local state = toggles[opt]
-        btn.Text = opt .. " [" .. (state and "ON" or "OFF") .. "]"
-        btn.BackgroundColor3 = state and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 80)
-        
-        if opt == "Speed" then setSpeed(state)
-        elseif opt == "Fly" then setFly(state)
-        elseif opt == "AutoSteal" then setAutoSteal(state)
-        elseif opt == "AntiAFK" then setAntiAFK(state)
-        elseif opt == "ESP" then setESP(state)
-        end
+        toggleFeature(feature)
     end)
 end
 
 -- ===== زر إعادة التعيين =====
 resetBtn.MouseButton1Click:Connect(function()
-    for opt, btn in pairs(buttons) do
-        toggles[opt] = false
-        btn.Text = opt .. " [OFF]"
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
+    for feature, btn in pairs(btnRefs) do
+        toggles[feature] = false
+        btn.Text = btn.Text:gsub("%[.-%]", "[OFF]")
+        btn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
     end
-    setSpeed(false)
-    setFly(false)
-    setESP(false)
     hum.WalkSpeed = 16
+    for _, o in pairs(workspace:GetDescendants()) do
+        if o:IsA("Part") and o.Name:lower():find("egg") then
+            local hl = o:FindFirstChild("Highlight")
+            if hl then hl:Destroy() end
+        end
+    end
+    p:Chat("🔄 تم إيقاف جميع الميزات بواسطة BATO")
 end)
 
--- ===== زر إظهار/إخفاء الواجهة =====
+-- ===== زر إظهار/إخفاء الواجهة (علوي) =====
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0, 100, 0, 30)
+toggleBtn.Position = UDim2.new(0.5, -50, 0, 5)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+toggleBtn.Text = "⚡ BATO ⚡"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextScaled = true
+toggleBtn.Font = Enum.Font.Bold
+toggleBtn.BorderSizePixel = 2
+toggleBtn.BorderColor3 = Color3.fromRGB(255, 0, 0)
+toggleBtn.Parent = gui
+
 local guiVisible = true
 toggleBtn.MouseButton1Click:Connect(function()
     guiVisible = not guiVisible
     frame.Visible = guiVisible
-    toggleBtn.Visible = true
-    toggleBtn.Text = guiVisible and "⚡ BAT0 ⚡" or "🔽 Show"
+    toggleBtn.Text = guiVisible and "⚡ BATO ⚡" or "🔽 Show"
 end)
 
 -- ===== تأكيد التشغيل =====
-print("✅ SAM v7.0 - BAT0 يعمل! اضغط على 'BAT0' في أعلى الشاشة لإظهار/إخفاء الواجهة.")
+p:Chat("✅ BATO RED EDITION يعمل الآن!")
+print("✅ BATO RED EDITION جاهز!")
