@@ -1,248 +1,272 @@
---[=[
-    Script: BATO Hub V2.0 - Crimson Edition
-    حقوق النشر محفوظة لـ BATO
-    تم التطوير بأمر من المستخدم
-]=]
+-- =============================================
+-- BATO Universal Loader v3.0 (المطابق للأصل)
+-- جميع الحقوق محفوظة لـ BATO
+-- تم التطوير بأمر من المستخدم
+-- =============================================
 
-local BATO = {
-    Name = "BATO Hub",
-    Version = "2.0",
-    Creator = "BATO"
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+
+if identifyexecutor then
+    local execName = tostring(identifyexecutor()):lower()
+    if execName:find("solara") or execName:find("xeno") then
+        game:GetService("Players").LocalPlayer:Kick("BATO EXECUTOR NOT SUPPORTED")
+        return
+    end
+end
+
+local BASE = 'https://raw.githubusercontent.com/BATO/scripts/main/games/'
+
+local games = {
+    [9190691]    = 'anime-squadron.lua',
+    [896806231]  = 'axe-rng.lua',
+    [759293173]  = 'reign-piece.lua',
+    [973045631]  = 'anime-card-farm.lua',
+    [104489519]  = 'defend-ur-base-with-anime.lua',
+    [446405201]  = 'merge-a-nuke.lua',
+    [5028964]    = 'saber-simulator.lua',
+    [561990553]  = 'survive-zombie-arena.lua',
+    [35906875]   = 'anime-story-2.lua',
+    [33910482]   = 'anime-world-fighters.lua',
+    [895955624]  = 'anime-rng.lua',
+    [1006239440] = 'anime-battle-rng.lua',
+    [572660282]  = 'anime-ultraon-simulator.lua',
+    [2568838]    = 'tree-rng.lua',
+    [15504927]   = 'launch-a-wheel.lua',
+    [4651630]    = 'lineage-piece.lua',
+    [2823500]    = 'untitled-melee-rng.lua',
+    [889770537]  = 'farm-rng.lua',
+    [432538536]  = 'grow-a-garden-2.lua',
+    [10353739]   = 'loot-rng.lua',
+    [654102831]  = 'bomb-fishing.lua',
+    [32001182]   = 'merge-vs-mobs.lua',
+    [719390069]  = 'lucky-block-rush.lua',
+    [374857141]  = 'pickaxe-tycoon.lua',
+    [15904375]   = 'rng-heroes.lua',
+    [1105128955] = 'click-simulator.lua',
+    [51129361]   = 'scale-slimy-fish.lua',
+    [711432426]  = 'world-cup-manager.lua',
+    [665060893]  = 'evomon.lua',
+    [861213399]  = 'roll-to-defend.lua',
+    [33724194]   = 'anime-rng-defense.lua',
+    [831907229]  = 'spin-a-car.lua',
+    [36093006]   = 'animesouls.lua',
+    [742438713]  = 'rollanime.lua',
+    [168012640]  = 'becomeabillionaire.lua',
+    [34492682]   = 'chickenfarm.lua',
+    [444132252]  = 'hotsauce.lua',
+    [431165110]  = 'snowconestand.lua',
+    [250961762]  = 'beehive.lua',
+    [287664347]  = 'hackabussiness.lua',
+    [744386991]  = 'buildaslime.lua',
+    [11603322]   = 'buildapetfarm.lua',
+    [1000628384] = 'makeadrillfarm.lua',
+    [330064258]  = 'growitrng.lua',
+    [625498370]  = 'animeshitseer.lua',
+    [33896179]   = 'missilesvscities.lua',
+    [380415714]  = 'throwacoin.lua',
+    [177870152]  = 'buildakeyboard.lua',
+    [35666413]   = 'beeremasters.lua',
+    [532484073]  = 'mydinofarm.lua',
+    [9640154]    = 'storagehunters.lua',
+    [650517328]  = 'rollananime.lua',
+    [8309807]    = 'scratchyloot.lua',
+    [33290695]   = 'bethefinalboss.lua',
+    [540612760]  = 'buildabaseandsteal.lua',
+    [657759819]  = 'rollanimetofight.lua',
+    [35929511]   = 'animeexpeditions.lua',
+    [383912360]  = 'zombieturretfarm.lua',
+    [73354146]   = 'beafishbait.lua',
+    [878417107]  = 'mergeablackhole.lua',
+    [13511151]   = 'finalswarm.lua',
+    [645675002]  = 'pullaluckyfish.lua',
+    [295349008]  = 'lakesipping.lua',
+    [830072163]  = 'greedygrowers.lua',
+    [999381953]  = 'dinohunters.lua',
+    [865578721]  = 'getfattobreaktape.lua',
+    [286242120]  = 'lootup.lua',
+    [490911723]  = 'swingerspickaxe.lua',
+    [1056817463] = 'bidforanime.lua',
+    [10627495]   = 'somethingsexywillhappen.lua',
+    [4843918]    = 'farmafish.lua',
+    [1057255034] = 'cutagem.lua',
+    [15753989]   = 'catchaslop.lua',
+    [140965829]  = 'buildapetfactory.lua',
+    [35861864]   = 'roll2survive.lua',
+    [5003223]    = 'slapacumslut.lua',
+    [14685986]   = 'capybarasvsplants.lua',
+    [492855504]  = 'crawfishing.lua',
+    [522637919]  = 'miniwar.lua',
+    [816911736]  = 'buildabutterflygarden.lua',
+    [574941029]  = 'bo3zombies.lua',
+    [999893763]  = 'gardencleaner.lua',
+    [515420491]  = 'mutantplants.lua',
+    [12208023]   = 'dontstealbobo.lua',
+    [460048752]  = 'gardenhorizons.lua',
+    [36008925]   = 'buildazoo.lua',
+    [35532215]   = 'farmanisland.lua',
+    [8444917]    = 'mergeanimedefender.lua',
+    [12860813]   = 'mergeatanker.lua',
+    [389736281]  = 'saveanimals.lua',
+    [35328876]   = 'wtfisthisgamebrolmfao.lua',
+    [645519191]  = 'mergeamob.lua',
+    [622013004]  = 'cleankeycap.lua',
+    [248260079]  = 'moofarm.lua',
+    [618896802]  = 'lumberfarm.lua',
+    [697469702]  = 'backflipkeyboard.lua',
+    [1008902725] = 'speedmonkeyescape.lua',
+    [596089868]  = 'mineamountain.lua',
+    [630881948]  = 'coinflip.lua',
+    [679586291]  = 'dignclean.lua',
+    [32634643]   = 'rngvsfruit.lua',
+    [113072261]  = 'cutgrass.lua',
+    [1081589393] = 'fatperclick.lua',
+    [118455659]  = 'magicloot.lua',
+    [659716909]  = 'mergeminiarmy.lua',
+    [462340796]  = 'muscleevolution.lua',
+    [760075281]  = 'followersperclick.lua',
+    [326703534]  = 'kawaiianimerng.lua',
+    [1009503765] = 'rollagnome.lua',
+    [611030254]  = 'loadthetruck.lua',
+    [99675598]   = 'poweryourcity.lua',
+    [531274056]  = 'rolltosurvive.lua',
+    [3434923]    = 'doublejumpbike.lua',
+    [7015605]    = 'simonsays.lua',
+    [124804121]  = 'kickballtospace.lua',
+    [1010818854] = 'catchbillionducks.lua',
+    [943930401]  = 'oilempire.lua',
+    [609942260]  = 'stopbugs.lua',
+    [631662618]  = 'cardealer.lua',
+    [1095870602] = 'drillforanime.lua',
+    [180466034]  = 'growchickenfighter.lua',
+    [825735094]  = 'stealanegg.lua',
+    [10142514]   = 'gardentower.lua',
+    [939397893]  = 'breaktape.lua',
+    [918026845]  = 'sellores.lua',
+    [2919794]    = 'lowball.lua',
+    [699041832]  = 'hackperclick.lua',
+    [1005157018] = 'spinafem.lua',
+    [999320972]  = 'muscleprisonbreak.lua',
+    [15211300]   = 'flowershop.lua',
+    [878922422]  = 'coachafighter.lua',
+    [949197661]  = 'automateares.lua',
+    [200275059]  = 'buildorefarm.lua',
+    [943932821]  = 'poopanorefarm.lua',
+    [854390513]  = 'jumptostealslime.lua',
+    [103466300]  = 'shrinkperstep.lua',
+    [519201492]  = 'heightperjump.lua',
+    [35850353]   = 'mergeplantsvsmobs.lua',
+    [124937935]  = 'carsvstape.lua',
+    [127740815]  = 'plushietd.lua',
+    [671178856]  = 'powerperclick.lua',
+    [912232112]  = 'standevolution.lua',
+    [515962489]  = 'mergeswordzombies.lua',
+    [390180214]  = 'reheads.lua',
+    [35932459]   = 'wingsforbrainrot.lua',
+    [388952470]  = 'dancinganimals.lua',
+    [111213976]  = 'poweracity.lua',
+    [997943525]  = 'simplecowboysfarmer.lua',
+    [786473200]  = 'breakdoors.lua',
+    [559846885]  = 'ironsoulsdungeon.lua',
+    [286016413]  = 'broketorich.lua',
+    [860201727]  = 'speedevolve.lua',
+    [554718083]  = 'rollanarmy.lua',
+    [1097982922] = 'kittenkeyboardescape.lua',
+    [852706731]  = 'rollasuperhero.lua',
+    [1030691482] = 'beanstalksquishy.lua',
+    [308858726]  = 'buildagunarmy.lua',
+    [459291258]  = 'cleanleaves.lua',
+    [232837303]  = 'screamperclick.lua',
+    [312122244]  = 'SpinjitsuEscape.lua',
+    [4127076]    = 'catchntame.lua',
+    [183340924]  = 'drainocean.lua',
+    [750112327]  = 'jumpycrunchy.lua',
+    [496909722]  = 'dungeonquest.lua',
+    [988942002]  = 'auraperclick.lua',
+    [546215338]  = 'animewarrng.lua',
+    [33893781]   = 'dreamkeyboard.lua',
+    [36086574]   = 'starcatchers.lua',
+    [33579757]   = 'minerrng.lua',
+    [522804844]  = 'climbwaterslide.lua',
+    [490177241]  = 'rollforchiikawa.lua',
+    [355220525]  = 'rollaspirit.lua',
+    [35699110]   = 'animelootup.lua',
+    [1018567917] = 'snipebrainrots.lua',
+    [204295404]  = 'bingo.lua',
+    [16890920]   = 'mansiontycoon.lua',
+    [688446729]  = 'airporttycoon.lua',
+    [16481354]   = 'slimecardcollection.lua',
+    [4656477]    = 'caseparadise.lua',
+    [706743014]  = 'swordempire.lua',
+    [247318225]  = 'animecoin.lua',
+    [592785028]  = 'fishforjunk.lua',
+    [824329932]  = 'rolladice.lua',
+    [15340279]   = 'mytoll.lua',
+    [997705665]  = 'billionairezoo.lua',
+    [1061245028] = 'cliffmansion.lua',
+    [35754558]   = 'ageevolution.lua',
+    [476752300]  = 'bemonkey.lua',
+    [15707680]   = 'fishperclick.lua',
+    [35888785]   = 'prospecting.lua',
+    [35620138]   = 'fishanimrng.lua',
+    [7371243]    = 'tropicalresort.lua',
+    [896205907]  = 'presskeycap.lua',
+    [554364117]  = 'heatperclick.lua',
+    [365646753]  = 'parkourpandemic.lua',
+    [724439129]  = 'dmgper.lua',
+    [952510004]  = 'defendringfarm.lua',
+    [35659866]   = 'pangame.lua',
+    [470393728]  = 'tollgame.lua',
+    [7916244]    = 'snatchaseed.lua',
+    [987733062]  = 'animejackpot.lua',
+    [912801413]  = 'climbslop.lua',
+    [1008362692] = 'spiderman.lua',
+    [1110056661] = 'unboxasmr.lua',
+    [5096106]    = 'surviveanimearena.lua',
+    [684188376]  = 'rebirthfrenzy.lua',
+    [177982364]  = 'hoteltycoon.lua',
+    [5019929]    = 'penthouse.lua',
+    [976904614]  = 'animegirlpaint.lua',
+    [33017480]   = 'animedice.lua',
+    [697359830]  = 'reeled.lua',
+    [32032540]   = 'heavyweightfishing.lua',
+    [605521299]  = 'drillblocks.lua',
+    [5055349]    = 'cookandsell.lua',
+    [652521234]  = 'meltice.lua',
+    [16060315]   = 'footballbrainrot.lua',
+    [885992339]  = 'makesoccerplayers.lua',
+    [33642706]   = 'rollanarmyy.lua',
+    [716389229]  = 'rollforavataritems.lua',
+    [815212136]  = 'greedybrainrots.lua',
+    [548528838]  = 'auraforbrainrots.lua',
+    [712896401]  = 'buildanai.lua',
+    [918672217]  = 'fruitsamurai.lua',
+    [612510500]  = 'holefishing.lua',
+    [7473952601] = 'saveyourcat.lua',
+    [680513873]  = 'superheroevolution.lua',
+    [641497291]  = 'skinnyperstep.lua',
+    [949888772]  = 'myseafood.lua',
+    [419937938]  = 'bidforsoccercards.lua',
+    [193560319]  = 'fillwatertank.lua',
+    [1092080264] = 'carvewood.lua',
+    [1044583942] = 'cleantheworld.lua',
+    [1040399903] = 'surviveverity.luau',
+    [659075385]  = 'CollectTheAlphabet.luau',
 }
 
--- إنشاء الواجهة الرئيسية
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "BATO_GUI"
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local file = games[game.CreatorId]
+if file then
+    pcall(function()
+        local httpRequest = request or http_request or (syn and syn.request) or (http and http.request)
+        if not httpRequest then return end
 
--- الإطار الرئيسي (خلفية حمراء داكنة مع توهج)
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 380, 0, 500)
-MainFrame.Position = UDim2.new(0.5, -190, 0.5, -250)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 0, 0) -- خلفية حمراء داكنة
-MainFrame.BackgroundTransparency = 0.05
-MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
-
--- زوايا دائرية مع إضاءة حمراء
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 16)
-UICorner.Parent = MainFrame
-
--- تأثير توهج أحمر (خلفية متوهجة)
-local GlowEffect = Instance.new("Frame")
-GlowEffect.Size = UDim2.new(1.1, 0, 1.1, 0)
-GlowEffect.Position = UDim2.new(-0.05, 0, -0.05, 0)
-GlowEffect.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
-GlowEffect.BackgroundTransparency = 0.8
-GlowEffect.BorderSizePixel = 0
-GlowEffect.Parent = MainFrame
-
-local GlowCorner = Instance.new("UICorner")
-GlowCorner.CornerRadius = UDim.new(0, 20)
-GlowCorner.Parent = GlowEffect
-
--- إطار داخلي شفاف للتباين
-local InnerFrame = Instance.new("Frame")
-InnerFrame.Size = UDim2.new(0.96, 0, 0.96, 0)
-InnerFrame.Position = UDim2.new(0.02, 0, 0.02, 0)
-InnerFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 0)
-InnerFrame.BackgroundTransparency = 0.3
-InnerFrame.BorderSizePixel = 0
-InnerFrame.Parent = MainFrame
-
-local InnerCorner = Instance.new("UICorner")
-InnerCorner.CornerRadius = UDim.new(0, 12)
-InnerCorner.Parent = InnerFrame
-
--- عنوان BATO (بأسلوب أحمر ناري)
-local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, 0, 0, 50)
-TitleLabel.Position = UDim2.new(0, 0, 0, 0)
-TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "BATO Hub v2.0"
-TitleLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-TitleLabel.TextScaled = true
-TitleLabel.Font = Enum.Font.GothamBold
-TitleLabel.TextXAlignment = Enum.TextXAlignment.Center
-TitleLabel.Parent = InnerFrame
-
--- تأثير ظل للنص
-local TitleShadow = Instance.new("TextLabel")
-TitleShadow.Size = UDim2.new(1, 0, 0, 50)
-TitleShadow.Position = UDim2.new(0.002, 0, 0.002, 0)
-TitleShadow.BackgroundTransparency = 1
-TitleShadow.Text = "BATO Hub v2.0"
-TitleShadow.TextColor3 = Color3.fromRGB(100, 0, 0)
-TitleShadow.TextScaled = true
-TitleShadow.Font = Enum.Font.GothamBold
-TitleShadow.TextXAlignment = Enum.TextXAlignment.Center
-TitleShadow.Parent = InnerFrame
-
--- خط فاصل متوهج
-local Divider = Instance.new("Frame")
-Divider.Size = UDim2.new(0.9, 0, 0, 3)
-Divider.Position = UDim2.new(0.05, 0, 0, 50)
-Divider.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-Divider.BackgroundTransparency = 0.2
-Divider.Parent = InnerFrame
-
--- توهج للخط الفاصل
-local DividerGlow = Instance.new("Frame")
-DividerGlow.Size = UDim2.new(0.9, 0, 0, 6)
-DividerGlow.Position = UDim2.new(0.05, 0, 0, 48)
-DividerGlow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-DividerGlow.BackgroundTransparency = 0.8
-DividerGlow.Parent = InnerFrame
-
--- دالة لإنشاء زر (بخلفية حمراء داكنة)
-local function createButton(parent, text, position, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.8, 0, 0, 38)
-    button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(255, 200, 200)
-    button.TextScaled = true
-    button.Font = Enum.Font.Gotham
-    button.BorderSizePixel = 0
-    button.Parent = parent
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = button
-    
-    -- تأثير hover
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+        httpRequest({
+            Url = "https://ouroboros-track.ouroboros-hub.workers.dev/hit",
+            Method = "POST"
+        })
     end)
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-    end)
-    
-    button.MouseButton1Click:Connect(callback)
-    return button
+
+    task.wait(math.random())
+    loadstring(game:HttpGet(BASE .. file))()
 end
-
--- دالة لإنشاء Toggle (بأسلوب أحمر)
-local function createToggle(parent, text, position, defaultState)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0.8, 0, 0, 32)
-    frame.Position = position
-    frame.BackgroundTransparency = 1
-    frame.Parent = parent
-    
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.Position = UDim2.new(0, 0, 0, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 200, 200)
-    label.TextScaled = true
-    label.Font = Enum.Font.Gotham
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.Parent = frame
-    
-    local toggleBtn = Instance.new("TextButton")
-    toggleBtn.Size = UDim2.new(0.25, 0, 1, 0)
-    toggleBtn.Position = UDim2.new(0.75, 0, 0, 0)
-    toggleBtn.BackgroundColor3 = defaultState and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(40, 0, 0)
-    toggleBtn.Text = defaultState and "ON" or "OFF"
-    toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleBtn.TextScaled = true
-    toggleBtn.Font = Enum.Font.GothamBold
-    toggleBtn.BorderSizePixel = 0
-    toggleBtn.Parent = frame
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 4)
-    corner.Parent = toggleBtn
-    
-    local state = defaultState
-    toggleBtn.MouseButton1Click:Connect(function()
-        state = not state
-        toggleBtn.BackgroundColor3 = state and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(40, 0, 0)
-        toggleBtn.Text = state and "ON" or "OFF"
-        print(text .. " changed to: " .. tostring(state))
-    end)
-    
-    return toggleBtn, state
-end
-
--- إنشاء الأزرار حسب الصورة
-local yOffset = 60
-local spacing = 48
-
--- TOGGLE
-createToggle(InnerFrame, "TOGGLE", UDim2.new(0.1, 0, 0, yOffset), false)
-
--- Bypass Anti-cheat
-createToggle(InnerFrame, "Bypass Anti cheat", UDim2.new(0.1, 0, 0, yOffset + spacing), true)
-
--- Move to Stand
-createButton(InnerFrame, "Move to Stand", UDim2.new(0.1, 0, 0, yOffset + spacing * 2), function()
-    print("الانتقال إلى المنصة - BATO")
-end)
-
--- Respawn Character
-createButton(InnerFrame, "Respawn Character", UDim2.new(0.1, 0, 0, yOffset + spacing * 3), function()
-    print("إعادة ظهور الشخصية - BATO")
-end)
-
--- ex
-createButton(InnerFrame, "ex", UDim2.new(0.1, 0, 0, yOffset + spacing * 4), function()
-    print("تشغيل ex - BATO")
-end)
-
--- TP Walk: OFF
-createToggle(InnerFrame, "TP Walk: OFF", UDim2.new(0.1, 0, 0, yOffset + spacing * 5), false)
-
--- TP Speed: 300 Studs/s
-local speedFrame = Instance.new("Frame")
-speedFrame.Size = UDim2.new(0.8, 0, 0, 32)
-speedFrame.Position = UDim2.new(0.1, 0, 0, yOffset + spacing * 6)
-speedFrame.BackgroundTransparency = 1
-speedFrame.Parent = InnerFrame
-
-local speedLabel = Instance.new("TextLabel")
-speedLabel.Size = UDim2.new(1, 0, 1, 0)
-speedLabel.Position = UDim2.new(0, 0, 0, 0)
-speedLabel.BackgroundTransparency = 1
-speedLabel.Text = "TP Speed: 300 Studs/s"
-speedLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-speedLabel.TextScaled = true
-speedLabel.Font = Enum.Font.GothamBold
-speedLabel.TextXAlignment = Enum.TextXAlignment.Center
-speedLabel.Parent = speedFrame
-
--- تأثير نبض خفيف للخلفية
-game:GetService("RunService").RenderStepped:Connect(function()
-    local pulse = (math.sin(tick() * 2) + 1) / 2
-    MainFrame.BackgroundColor3 = Color3.fromRGB(30 + pulse * 10, 0, 0)
-end)
-
--- جعل الواجهة قابلة للسحب
-local dragging = false
-local dragStart
-local startPos
-
-MainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = MainFrame.Position
-    end
-end)
-
-MainFrame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
