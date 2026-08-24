@@ -1,7 +1,7 @@
 -- =============================================
--- Script: BATO MINI PANEL v4.0
--- Language: English
--- Features: Compact UI, Open Sound, Single Lock Toggle
+-- Script: BATO ADVANCED UI v7.0
+-- Style: Like the TikTok video
+-- Sections: The Beginning | Scripts | Information
 -- Rights: BATO
 -- =============================================
 
@@ -13,256 +13,221 @@ local humanoid = char:WaitForChild("Humanoid")
 
 -- GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BatoMini"
+screenGui.Name = "BatoAdvanced"
 screenGui.Parent = player.PlayerGui
 
--- Sound (when UI opens)
-local openSound = Instance.new("Sound")
-openSound.SoundId = "rbxassetid://9120393705" -- نغمة جميلة (يمكنك تغيير الـ ID)
-openSound.Volume = 0.5
-openSound.Parent = screenGui
-
--- Background Effect (animated particles)
+-- Background (animated gradient)
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-bg.BackgroundTransparency = 0.5
+bg.BackgroundColor3 = Color3.fromRGB(5, 0, 5)
 bg.Parent = screenGui
 
--- Glow border (smaller)
-local glow = Instance.new("Frame")
-glow.Size = UDim2.new(0, 320, 0, 460)
-glow.Position = UDim2.new(0.5, -160, 0.5, -230)
-glow.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-glow.BackgroundTransparency = 0.8
-glow.BorderSizePixel = 3
-glow.BorderColor3 = Color3.fromRGB(255, 0, 0)
-glow.Parent = screenGui
+-- Animated background particles (stars)
+for i = 1, 30 do
+    local star = Instance.new("Frame")
+    star.Size = UDim2.new(0, 2, 0, 2)
+    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
+    star.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    star.BackgroundTransparency = 0.5
+    star.Parent = bg
+    game:GetService("RunService").RenderStepped:Connect(function()
+        star.Position = UDim2.new(star.Position.X.Scale, 0, star.Position.Y.Scale + 0.001, 0)
+        if star.Position.Y.Scale > 1 then star.Position = UDim2.new(math.random(), 0, 0, 0) end
+    end)
+end
 
--- Main Frame (smaller)
+-- Main Frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 440)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -220)
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 0)
-mainFrame.BackgroundTransparency = 0.15
+mainFrame.Size = UDim2.new(0, 450, 0, 600)
+mainFrame.Position = UDim2.new(0.5, -225, 0.5, -300)
+mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 10)
+mainFrame.BackgroundTransparency = 0.2
 mainFrame.BorderSizePixel = 2
-mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+mainFrame.BorderColor3 = Color3.fromRGB(200, 0, 200)
 mainFrame.Parent = screenGui
 
--- Title (smaller, animated pulse)
+-- Glow
+local glow = Instance.new("Frame")
+glow.Size = UDim2.new(0, 470, 0, 620)
+glow.Position = UDim2.new(0.5, -235, 0.5, -310)
+glow.BackgroundColor3 = Color3.fromRGB(200, 0, 200)
+glow.BackgroundTransparency = 0.9
+glow.BorderSizePixel = 3
+glow.BorderColor3 = Color3.fromRGB(200, 0, 200)
+glow.Parent = screenGui
+
+-- Title (neon pulse)
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, 0, 0, 50)
 title.Position = UDim2.new(0, 0, 0, 5)
-title.Text = "🔥 BATO PANEL"
-title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.Text = "🔥 BATO ADVANCED"
+title.TextColor3 = Color3.fromRGB(200, 0, 200)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
 title.BackgroundTransparency = 1
 title.Parent = mainFrame
 
--- Pulse animation for title
+-- Title pulse
 game:GetService("RunService").RenderStepped:Connect(function()
     local pulse = (math.sin(tick() * 3) + 1) / 2
-    title.TextColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0)
+    title.TextColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0.5 + pulse * 0.5)
 end)
 
--- Glow animation
+-- Glow pulse
 game:GetService("RunService").RenderStepped:Connect(function()
     local pulse = (math.sin(tick() * 2) + 1) / 2
-    glow.BackgroundTransparency = 0.5 + pulse * 0.3
-    glow.BorderColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0)
+    glow.BorderColor3 = Color3.new(0.5 + pulse * 0.5, 0, 0.5 + pulse * 0.5)
+    glow.BackgroundTransparency = 0.7 + pulse * 0.2
 end)
 
--- BATO Rights
+-- Rights
 local rights = Instance.new("TextLabel")
 rights.Size = UDim2.new(1, 0, 0, 20)
 rights.Position = UDim2.new(0, 0, 1, -25)
 rights.Text = "© BATO"
-rights.TextColor3 = Color3.fromRGB(150, 0, 0)
+rights.TextColor3 = Color3.fromRGB(150, 0, 150)
 rights.TextScaled = true
 rights.Font = Enum.Font.Gotham
 rights.BackgroundTransparency = 1
 rights.Parent = mainFrame
 
--- Toggle Button (Hide/Show UI)
+-- Toggle
 local toggleBtn = Instance.new("ImageButton")
 toggleBtn.Size = UDim2.new(0, 35, 0, 35)
 toggleBtn.Position = UDim2.new(1, -45, 0, 5)
-toggleBtn.Image = "rbxassetid://6031094667" -- قفل
+toggleBtn.Image = "rbxassetid://6031094667"
 toggleBtn.BackgroundTransparency = 1
 toggleBtn.Parent = mainFrame
 
--- Single Lock/Unlock Button (toggle)
-local lockToggleBtn = Instance.new("ImageButton")
-lockToggleBtn.Size = UDim2.new(0, 30, 0, 30)
-lockToggleBtn.Position = UDim2.new(0, 10, 0, 10)
-lockToggleBtn.Image = "rbxassetid://6031094667" -- قفل (مغلق)
-lockToggleBtn.BackgroundTransparency = 1
-lockToggleBtn.Parent = mainFrame
+-- Lock
+local lockBtn = Instance.new("TextButton")
+lockBtn.Size = UDim2.new(0, 90, 0, 30)
+lockBtn.Position = UDim2.new(0.5, -45, 0, 5)
+lockBtn.Text = "🔒 LOCK"
+lockBtn.TextColor3 = Color3.fromRGB(200, 0, 200)
+lockBtn.TextScaled = true
+lockBtn.Font = Enum.Font.GothamBold
+lockBtn.BackgroundColor3 = Color3.fromRGB(30, 0, 30)
+lockBtn.BorderSizePixel = 1
+lockBtn.BorderColor3 = Color3.fromRGB(200, 0, 200)
+lockBtn.Parent = mainFrame
 
--- State
 local isLocked = false
+local allButtons = {}
 
--- Function to toggle lock
-local function toggleLock()
+local function updateLock()
     isLocked = not isLocked
-    if isLocked then
-        lockToggleBtn.Image = "rbxassetid://6031094554" -- فتح
-        for _, btn in ipairs(buttons) do
-            btn.Active = false
-            btn.TextTransparency = 0.5
-        end
-    else
-        lockToggleBtn.Image = "rbxassetid://6031094667" -- قفل
-        for _, btn in ipairs(buttons) do
-            btn.Active = true
-            btn.TextTransparency = 0
-        end
+    lockBtn.Text = isLocked and "🔓 UNLOCK" or "🔒 LOCK"
+    lockBtn.BackgroundColor3 = isLocked and Color3.fromRGB(50, 0, 50) or Color3.fromRGB(30, 0, 30)
+    for _, btn in ipairs(allButtons) do
+        btn.Active = not isLocked
+        btn.TextTransparency = isLocked and 0.5 or 0
     end
 end
+lockBtn.MouseButton1Click:Connect(updateLock)
 
-lockToggleBtn.MouseButton1Click:Connect(toggleLock)
+-- ============================
+-- الأقسام
+-- ============================
+local yPos = 55
+local sections = {
+    {name = "📌 THE BEGINNING", color = Color3.fromRGB(200, 0, 200)},
+    {name = "⚙️ SCRIPTS", color = Color3.fromRGB(0, 200, 200)},
+    {name = "ℹ️ INFORMATION", color = Color3.fromRGB(200, 200, 0)}
+}
 
--- Buttons (smaller)
-local yPos = 50
-local buttons = {}
+for _, section in ipairs(sections) do
+    local secLabel = Instance.new("TextLabel")
+    secLabel.Size = UDim2.new(0.95, 0, 0, 30)
+    secLabel.Position = UDim2.new(0.025, 0, 0, yPos)
+    secLabel.Text = section.name
+    secLabel.TextColor3 = section.color
+    secLabel.TextScaled = true
+    secLabel.Font = Enum.Font.GothamBold
+    secLabel.BackgroundColor3 = Color3.fromRGB(20, 0, 20)
+    secLabel.BackgroundTransparency = 0.5
+    secLabel.BorderSizePixel = 1
+    secLabel.BorderColor3 = section.color
+    secLabel.Parent = mainFrame
+    yPos = yPos + 37
 
-local function createButton(text, y, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 30)
-    btn.Position = UDim2.new(0.05, 0, 0, y)
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 50, 50)
-    btn.TextScaled = true
-    btn.Font = Enum.Font.Gotham
-    btn.BackgroundColor3 = Color3.fromRGB(30, 0, 0)
-    btn.BackgroundTransparency = 0.3
-    btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.fromRGB(255, 0, 0)
-    btn.Parent = mainFrame
-    table.insert(buttons, btn)
-    
-    -- Hover animation
-    btn.MouseEnter:Connect(function()
-        btn.BackgroundTransparency = 0.1
-        btn.Size = UDim2.new(0.92, 0, 0, 32)
-    end)
-    btn.MouseLeave:Connect(function()
+    -- أزرار لكل قسم
+    local btnCount = 2
+    for i = 1, btnCount do
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.85, 0, 0, 28)
+        btn.Position = UDim2.new(0.075, 0, 0, yPos)
+        btn.Text = section.name == "📌 THE BEGINNING" and (i == 1 and "▶️ Start" or "⏹️ Stop") or
+                   section.name == "⚙️ SCRIPTS" and (i == 1 and "📜 Load Script" or "🔄 Reload") or
+                   "📊 Stats"
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.TextScaled = true
+        btn.Font = Enum.Font.Gotham
+        btn.BackgroundColor3 = Color3.fromRGB(15, 0, 15)
         btn.BackgroundTransparency = 0.3
-        btn.Size = UDim2.new(0.9, 0, 0, 30)
-    end)
-    
-    btn.MouseButton1Click:Connect(callback)
-    return btn
+        btn.BorderSizePixel = 1
+        btn.BorderColor3 = section.color
+        btn.Parent = mainFrame
+        table.insert(allButtons, btn)
+
+        btn.MouseEnter:Connect(function()
+            if not isLocked then
+                btn.BackgroundTransparency = 0.1
+                btn.Size = UDim2.new(0.87, 0, 0, 30)
+            end
+        end)
+        btn.MouseLeave:Connect(function()
+            btn.BackgroundTransparency = 0.3
+            btn.Size = UDim2.new(0.85, 0, 0, 28)
+        end)
+
+        btn.MouseButton1Click:Connect(function()
+            if isLocked then return end
+            if btn.Text == "▶️ Start" then
+                print("▶️ Starting...")
+                humanoid.WalkSpeed = 16
+            elseif btn.Text == "⏹️ Stop" then
+                print("⏹️ Stopping...")
+                humanoid.WalkSpeed = 0
+            elseif btn.Text == "📜 Load Script" then
+                print("📜 Loading script...")
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/example/script.lua"))()
+            elseif btn.Text == "🔄 Reload" then
+                print("🔄 Reloading...")
+                game:GetService("CoreGui"):FindFirstChild("BatoAdvanced"):Destroy()
+                -- إعادة تحميل السكربت (يمكنك وضع الكود هنا)
+            elseif btn.Text == "📊 Stats" then
+                print("📊 Player:", player.Name)
+                print("Health:", humanoid.Health)
+                print("Speed:", humanoid.WalkSpeed)
+            end
+        end)
+        yPos = yPos + 35
+    end
+    yPos = yPos + 10
 end
 
--- 1. Slow Mode
-local slowActive = false
-createButton("🐢 Slow: OFF", yPos, function()
-    slowActive = not slowActive
-    if slowActive then
-        game:GetService("RunService").Stepped:Connect(function()
-            if slowActive then wait(0.3) end
-        end)
-        buttons[1].Text = "🐢 Slow: ON"
-    else
-        buttons[1].Text = "🐢 Slow: OFF"
-    end
-end)
-yPos = yPos + 37
-
--- 2. Bypass Anti Cheat
-local bypassActive = false
-createButton("🛡️ Bypass: OFF", yPos, function()
-    bypassActive = not bypassActive
-    buttons[2].Text = bypassActive and "🛡️ Bypass: ON" or "🛡️ Bypass: OFF"
-end)
-yPos = yPos + 37
-
--- 3. Shop
-createButton("🛒 Shop", yPos, function()
-    print("🛒 Shop opened (simulated)")
-end)
-yPos = yPos + 37
-
--- 4. Move to Stand
-createButton("🚶 Move Stand", yPos, function()
-    local stand = Instance.new("Part")
-    stand.Size = Vector3.new(8, 1, 8)
-    stand.Position = hrp.Position + Vector3.new(0, 5, 10)
-    stand.Anchored = true
-    stand.BrickColor = BrickColor.new("Bright red")
-    stand.Parent = game.Workspace
-    hrp.CFrame = CFrame.new(stand.Position + Vector3.new(0, 2, 0))
-    game:GetService("Debris"):AddItem(stand, 5)
-end)
-yPos = yPos + 37
-
--- 5. Respawn
-createButton("💀 Respawn", yPos, function()
-    char:BreakJoints()
-    wait(0.5)
-    player:LoadCharacter()
-end)
-yPos = yPos + 37
-
--- 6. Index
-createButton("📊 Index", yPos, function()
-    print("📊 Player Info:")
-    print("Name:", player.Name)
-    print("Health:", humanoid.Health)
-end)
-yPos = yPos + 37
-
--- 7. TP Walk
-local tpWalkActive = false
-createButton("⚡ TP Walk: OFF", yPos, function()
-    tpWalkActive = not tpWalkActive
-    if tpWalkActive then
-        buttons[7].Text = "⚡ TP Walk: ON"
-        while tpWalkActive do
-            local target = mouse.Hit
-            hrp.CFrame = CFrame.new(target.Position + Vector3.new(0, 2, 0))
-            game:GetService("RunService").RenderStepped:Wait()
-        end
-    else
-        buttons[7].Text = "⚡ TP Walk: OFF"
-    end
-end)
-yPos = yPos + 37
-
--- 8. TP Speed
-createButton("💨 Speed: 300", yPos, function()
-    humanoid.WalkSpeed = 300
-    buttons[8].Text = "💨 Speed: 300"
-end)
-
--- Stats (smaller)
+-- Stats display
 local stats = Instance.new("TextLabel")
 stats.Size = UDim2.new(1, 0, 0, 25)
 stats.Position = UDim2.new(0, 0, 1, -50)
-stats.Text = "💰 43.2M | $1.9T | ⏱ 1m"
-stats.TextColor3 = Color3.fromRGB(255, 0, 0)
+stats.Text = "💰 43.2M | $1.9T | ⏱ 1m 14s"
+stats.TextColor3 = Color3.fromRGB(200, 0, 200)
 stats.TextScaled = true
 stats.Font = Enum.Font.GothamBold
 stats.BackgroundTransparency = 1
 stats.Parent = mainFrame
 
--- Toggle UI (Hide/Show with sound)
+-- Toggle UI
 local isOpen = true
 toggleBtn.MouseButton1Click:Connect(function()
     isOpen = not isOpen
     mainFrame.Visible = isOpen
     glow.Visible = isOpen
-    if isOpen then
-        openSound:Play() -- تشغيل الصوت عند الفتح
-        toggleBtn.Image = "rbxassetid://6031094667" -- قفل
-    else
-        toggleBtn.Image = "rbxassetid://6031094554" -- فتح
-    end
+    toggleBtn.Image = isOpen and "rbxassetid://6031094667" or "rbxassetid://6031094554"
 end)
 
--- Dragging (smaller)
+-- Dragging
 local dragging = false
 local dragStart, startPos
 
@@ -288,5 +253,5 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
-print("🔥 BATO MINI PANEL v4.0 Loaded.")
+print("🔥 BATO ADVANCED UI v7.0 Loaded.")
 print("👑 All commands ready for the USER.")
