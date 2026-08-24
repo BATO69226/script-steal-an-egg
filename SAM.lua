@@ -1,6 +1,6 @@
 -- =============================================
--- Script: BATO ULTIMATE UI v9.0
--- Features: Working buttons, Left sidebar sections, Hide/Show toggle
+-- Script: BATO ULTIMATE UI v10.0
+-- Features: Animated Eye, Star Background, Full Sections, Working Buttons
 -- Admin: Mohammad_kurdish73
 -- Rights: BATO
 -- =============================================
@@ -33,13 +33,15 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BatoUltimate"
 screenGui.Parent = player.PlayerGui
 
--- خلفية
+-- ============================
+-- خلفية نجوم متحركة (GIF-like)
+-- ============================
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(5, 0, 5)
 bg.Parent = screenGui
 
--- نجوم
+-- نجوم متحركة (50 نجمة)
 for i = 1, 50 do
     local star = Instance.new("Frame")
     star.Size = UDim2.new(0, math.random(1, 3), 0, math.random(1, 3))
@@ -56,33 +58,11 @@ for i = 1, 50 do
 end
 
 -- ============================
--- الإطار الرئيسي
--- ============================
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 500, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -250, 0.5, -250)
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 10)
-mainFrame.BackgroundTransparency = 0.15
-mainFrame.BorderSizePixel = 2
-mainFrame.BorderColor3 = Color3.fromRGB(200, 0, 200)
-mainFrame.Parent = screenGui
-
--- توهج
-local glow = Instance.new("Frame")
-glow.Size = UDim2.new(0, 520, 0, 520)
-glow.Position = UDim2.new(0.5, -260, 0.5, -260)
-glow.BackgroundColor3 = Color3.fromRGB(200, 0, 200)
-glow.BackgroundTransparency = 0.9
-glow.BorderSizePixel = 3
-glow.BorderColor3 = Color3.fromRGB(200, 0, 200)
-glow.Parent = screenGui
-
--- ============================
--- العين الحمراء
+-- العين الحمراء المتحركة
 -- ============================
 local eyeFrame = Instance.new("Frame")
 eyeFrame.Size = UDim2.new(0, 60, 0, 60)
-eyeFrame.Position = UDim2.new(0.5, -30, 0.1, 0)
+eyeFrame.Position = UDim2.new(0.5, -30, 0.08, 0)
 eyeFrame.BackgroundTransparency = 1
 eyeFrame.Parent = screenGui
 
@@ -103,10 +83,32 @@ game:GetService("RunService").RenderStepped:Connect(function()
 end)
 
 -- ============================
--- العنوان والأزرار العلوية
+-- الإطار الرئيسي (مصغر)
+-- ============================
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 520, 0, 480)
+mainFrame.Position = UDim2.new(0.5, -260, 0.5, -240)
+mainFrame.BackgroundColor3 = Color3.fromRGB(10, 0, 10)
+mainFrame.BackgroundTransparency = 0.15
+mainFrame.BorderSizePixel = 2
+mainFrame.BorderColor3 = Color3.fromRGB(200, 0, 200)
+mainFrame.Parent = screenGui
+
+-- توهج
+local glow = Instance.new("Frame")
+glow.Size = UDim2.new(0, 540, 0, 500)
+glow.Position = UDim2.new(0.5, -270, 0.5, -250)
+glow.BackgroundColor3 = Color3.fromRGB(200, 0, 200)
+glow.BackgroundTransparency = 0.9
+glow.BorderSizePixel = 3
+glow.BorderColor3 = Color3.fromRGB(200, 0, 200)
+glow.Parent = screenGui
+
+-- ============================
+-- العنوان
 -- ============================
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0.7, 0, 0, 40)
+title.Size = UDim2.new(0.7, 0, 0, 35)
 title.Position = UDim2.new(0.15, 0, 0, 5)
 title.Text = "🔥 BATO ULTIMATE"
 title.TextColor3 = Color3.fromRGB(200, 0, 200)
@@ -115,18 +117,31 @@ title.Font = Enum.Font.GothamBold
 title.BackgroundTransparency = 1
 title.Parent = mainFrame
 
--- زر إخفاء/إظهار الواجهة
-local hideBtn = Instance.new("ImageButton")
-hideBtn.Size = UDim2.new(0, 35, 0, 35)
-hideBtn.Position = UDim2.new(1, -45, 0, 5)
-hideBtn.Image = "rbxassetid://6031094667"
-hideBtn.BackgroundTransparency = 1
-hideBtn.Parent = mainFrame
+-- ============================
+-- زر قفل/فتح الواجهة (على اليسار)
+-- ============================
+local toggleVisBtn = Instance.new("ImageButton")
+toggleVisBtn.Size = UDim2.new(0, 30, 0, 30)
+toggleVisBtn.Position = UDim2.new(0.01, 0, 0.01, 0)
+toggleVisBtn.Image = "rbxassetid://6031094667"
+toggleVisBtn.BackgroundTransparency = 1
+toggleVisBtn.Parent = mainFrame
 
--- زر القفل (يقفل كل الأزرار)
+local isVisible = true
+toggleVisBtn.MouseButton1Click:Connect(function()
+    isVisible = not isVisible
+    mainFrame.Visible = isVisible
+    glow.Visible = isVisible
+    eyeFrame.Visible = isVisible
+    toggleVisBtn.Image = isVisible and "rbxassetid://6031094667" or "rbxassetid://6031094554"
+end)
+
+-- ============================
+-- زر LOCK (يقفل الأزرار)
+-- ============================
 local lockBtn = Instance.new("TextButton")
-lockBtn.Size = UDim2.new(0, 80, 0, 25)
-lockBtn.Position = UDim2.new(0.5, -40, 0, 5)
+lockBtn.Size = UDim2.new(0, 70, 0, 22)
+lockBtn.Position = UDim2.new(0.5, -35, 0, 5)
 lockBtn.Text = "🔒 LOCK"
 lockBtn.TextColor3 = Color3.fromRGB(200, 0, 200)
 lockBtn.TextScaled = true
@@ -153,14 +168,15 @@ lockBtn.MouseButton1Click:Connect(updateLock)
 -- الأقسام على اليسار
 -- ============================
 local sections = {
-    {name = "📌 General", id = "general", color = Color3.fromRGB(200, 0, 200)},
-    {name = "👑 VIP", id = "vip", color = Color3.fromRGB(255, 215, 0)},
-    {name = "⚙️ Scripts", id = "scripts", color = Color3.fromRGB(0, 200, 200)},
-    {name = "ℹ️ Info", id = "info", color = Color3.fromRGB(200, 200, 0)}
+    {name = "📍 TP", id = "tp", color = Color3.fromRGB(0, 200, 255)},
+    {name = "⚡ Speed", id = "speed", color = Color3.fromRGB(0, 255, 0)},
+    {name = "🛡️ Def", id = "def", color = Color3.fromRGB(255, 200, 0)},
+    {name = "💀 Kill", id = "kill", color = Color3.fromRGB(255, 0, 0)},
+    {name = "⚙️ Misc", id = "misc", color = Color3.fromRGB(200, 0, 200)}
 }
 
 local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 80, 0, 400)
+sidebar.Size = UDim2.new(0, 75, 0, 400)
 sidebar.Position = UDim2.new(0, 0, 0.1, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(15, 0, 15)
 sidebar.BackgroundTransparency = 0.3
@@ -169,12 +185,12 @@ sidebar.BorderColor3 = Color3.fromRGB(200, 0, 200)
 sidebar.Parent = mainFrame
 
 local sidebarButtons = {}
-local currentSection = "general"
+local currentSection = "tp"
 
 for i, section in ipairs(sections) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 40)
-    btn.Position = UDim2.new(0.05, 0, 0, 20 + (i-1) * 45)
+    btn.Size = UDim2.new(0.9, 0, 0, 35)
+    btn.Position = UDim2.new(0.05, 0, 0, 15 + (i-1) * 42)
     btn.Text = section.name
     btn.TextColor3 = Color3.fromRGB(200, 200, 200)
     btn.TextScaled = true
@@ -191,6 +207,7 @@ for i, section in ipairs(sections) do
         updateVisibleSection()
         for _, b in ipairs(sidebarButtons) do
             b.BackgroundColor3 = Color3.fromRGB(20, 0, 20)
+            b.BackgroundTransparency = 0.5
         end
         btn.BackgroundColor3 = section.color
         btn.BackgroundTransparency = 0.2
@@ -198,21 +215,28 @@ for i, section in ipairs(sections) do
 end
 
 -- ============================
--- المحتوى حسب القسم
+-- المحتوى (الأزرار)
 -- ============================
 local contentFrame = Instance.new("Frame")
 contentFrame.Size = UDim2.new(0.8, 0, 0.85, 0)
-contentFrame.Position = UDim2.new(0.18, 0, 0.1, 0)
+contentFrame.Position = UDim2.new(0.17, 0, 0.1, 0)
 contentFrame.BackgroundTransparency = 1
 contentFrame.Parent = mainFrame
 
 local sectionContents = {}
-local currentY = 0
+local function createSection(id)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundTransparency = 1
+    frame.Parent = contentFrame
+    sectionContents[id] = frame
+    return frame
+end
 
--- دالة لإضافة أزرار لكل قسم
+-- دالة إضافة زر
 local function addButton(parent, text, y, color, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 30)
+    btn.Size = UDim2.new(0.9, 0, 0, 28)
     btn.Position = UDim2.new(0.05, 0, 0, y)
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -228,12 +252,12 @@ local function addButton(parent, text, y, color, callback)
     btn.MouseEnter:Connect(function()
         if not isLocked and btn.Active then
             btn.BackgroundTransparency = 0.1
-            btn.Size = UDim2.new(0.92, 0, 0, 32)
+            btn.Size = UDim2.new(0.92, 0, 0, 30)
         end
     end)
     btn.MouseLeave:Connect(function()
         btn.BackgroundTransparency = 0.3
-        btn.Size = UDim2.new(0.9, 0, 0, 30)
+        btn.Size = UDim2.new(0.9, 0, 0, 28)
     end)
 
     btn.MouseButton1Click:Connect(function()
@@ -244,141 +268,147 @@ local function addButton(parent, text, y, color, callback)
 end
 
 -- ============================
--- قسم GENERAL
+-- 1. قسم TP (تيليبورت)
 -- ============================
-local generalFrame = Instance.new("Frame")
-generalFrame.Size = UDim2.new(1, 0, 1, 0)
-generalFrame.BackgroundTransparency = 1
-generalFrame.Parent = contentFrame
-sectionContents["general"] = generalFrame
+local tpFrame = createSection("tp")
+local y = 5
 
-local yPos = 10
-local slowActive = false
-addButton(generalFrame, "🐢 Slow Mode: OFF", yPos, Color3.fromRGB(200, 0, 200), function()
-    slowActive = not slowActive
-    allButtons[1].Text = slowActive and "🐢 Slow Mode: ON" or "🐢 Slow Mode: OFF"
-    if slowActive then
-        game:GetService("RunService").Stepped:Connect(function()
-            while slowActive do wait(0.3) end
-        end)
+local tpLocations = {
+    {"🏠 Spawn", Vector3.new(0, 10, 0)},
+    {"🏛️ Center", Vector3.new(100, 10, 100)},
+    {"🌲 Forest", Vector3.new(-200, 10, -200)},
+    {"🏜️ Desert", Vector3.new(300, 10, -100)},
+    {"🌊 Ocean", Vector3.new(500, 10, 500)},
+}
+
+for _, loc in ipairs(tpLocations) do
+    addButton(tpFrame, loc[1], y, Color3.fromRGB(0, 200, 255), function()
+        hrp.CFrame = CFrame.new(loc[2])
+    end)
+    y = y + 35
+end
+
+-- ============================
+-- 2. قسم Speed (السرعة)
+-- ============================
+local speedFrame = createSection("speed")
+y = 5
+
+local speeds = {
+    {"🐢 Slow (10)", 10},
+    {"🚶 Normal (16)", 16},
+    {"🏃 Fast (50)", 50},
+    {"💨 Super (100)", 100},
+    {"⚡ Ultra (300)", 300},
+}
+
+for _, spd in ipairs(speeds) do
+    addButton(speedFrame, spd[1], y, Color3.fromRGB(0, 255, 0), function()
+        humanoid.WalkSpeed = spd[2]
+    end)
+    y = y + 35
+end
+
+-- ============================
+-- 3. قسم Def (دفاع)
+-- ============================
+local defFrame = createSection("def")
+y = 5
+
+addButton(defFrame, "🛡️ God Mode", y, Color3.fromRGB(255, 200, 0), function()
+    humanoid.MaxHealth = math.huge
+    humanoid.Health = math.huge
+end)
+y = y + 35
+
+addButton(defFrame, "❤️ Full Health", y, Color3.fromRGB(255, 200, 0), function()
+    humanoid.Health = humanoid.MaxHealth
+end)
+y = y + 35
+
+addButton(defFrame, "🔰 No Fall Damage", y, Color3.fromRGB(255, 200, 0), function()
+    -- محاكاة: منع ضرر السقوط
+    humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+        if humanoid.Health < 10 then
+            humanoid.Health = 100
+        end
+    end)
+end)
+y = y + 35
+
+addButton(defFrame, "🌀 Anti AFK", y, Color3.fromRGB(255, 200, 0), function()
+    game:GetService("VirtualUser"):CaptureController()
+    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+    print("🔄 Anti AFK activated")
+end)
+
+-- ============================
+-- 4. قسم Kill (قتل)
+-- ============================
+local killFrame = createSection("kill")
+y = 5
+
+addButton(killFrame, "💀 Kill Self", y, Color3.fromRGB(255, 0, 0), function()
+    char:BreakJoints()
+end)
+y = y + 35
+
+addButton(killFrame, "🔫 Kill All", y, Color3.fromRGB(255, 0, 0), function()
+    for _, p in ipairs(game.Players:GetPlayers()) do
+        if p ~= player and p.Character then
+            p.Character:BreakJoints()
+        end
     end
 end)
-yPos = yPos + 38
+y = y + 35
 
-local bypassActive = false
-addButton(generalFrame, "🛡️ Bypass: OFF", yPos, Color3.fromRGB(200, 0, 200), function()
-    bypassActive = not bypassActive
-    allButtons[2].Text = bypassActive and "🛡️ Bypass: ON" or "🛡️ Bypass: OFF"
+addButton(killFrame, "💥 Explode", y, Color3.fromRGB(255, 0, 0), function()
+    local explosion = Instance.new("Explosion")
+    explosion.Position = hrp.Position
+    explosion.BlastRadius = 20
+    explosion.BlastDamage = 50
+    explosion.Parent = game.Workspace
 end)
-yPos = yPos + 38
+y = y + 35
 
-addButton(generalFrame, "🚶 Move to Stand", yPos, Color3.fromRGB(200, 0, 200), function()
-    local stand = Instance.new("Part")
-    stand.Size = Vector3.new(8, 1, 8)
-    stand.Position = hrp.Position + Vector3.new(0, 5, 10)
-    stand.Anchored = true
-    stand.BrickColor = BrickColor.new("Bright red")
-    stand.Parent = game.Workspace
-    hrp.CFrame = CFrame.new(stand.Position + Vector3.new(0, 2, 0))
-    game:GetService("Debris"):AddItem(stand, 5)
+addButton(killFrame, "⚡ Shock", y, Color3.fromRGB(255, 0, 0), function()
+    for _, p in ipairs(game.Players:GetPlayers()) do
+        if p ~= player and p.Character then
+            p.Character:BreakJoints()
+        end
+    end
 end)
-yPos = yPos + 38
 
-addButton(generalFrame, "💀 Respawn", yPos, Color3.fromRGB(200, 0, 200), function()
+-- ============================
+-- 5. قسم Misc (متنوع)
+-- ============================
+local miscFrame = createSection("misc")
+y = 5
+
+addButton(miscFrame, "🌟 Fly (5s)", y, Color3.fromRGB(200, 0, 200), function()
+    local fly = Instance.new("BodyVelocity")
+    fly.MaxForce = Vector3.new(1, 1, 1) * 1000
+    fly.Velocity = Vector3.new(0, 50, 0)
+    fly.Parent = hrp
+    wait(5)
+    fly:Destroy()
+end)
+y = y + 35
+
+addButton(miscFrame, "🔄 Respawn", y, Color3.fromRGB(200, 0, 200), function()
     char:BreakJoints()
     wait(0.5)
     player:LoadCharacter()
 end)
+y = y + 35
 
--- ============================
--- قسم VIP (للأدمن فقط)
--- ============================
-local vipFrame = Instance.new("Frame")
-vipFrame.Size = UDim2.new(1, 0, 1, 0)
-vipFrame.BackgroundTransparency = 1
-vipFrame.Parent = contentFrame
-sectionContents["vip"] = vipFrame
-
-if isAdmin then
-    yPos = 10
-    addButton(vipFrame, "🌟 Fly (5s)", yPos, Color3.fromRGB(255, 215, 0), function()
-        local fly = Instance.new("BodyVelocity")
-        fly.MaxForce = Vector3.new(1, 1, 1) * 1000
-        fly.Velocity = Vector3.new(0, 50, 0)
-        fly.Parent = hrp
-        wait(5)
-        fly:Destroy()
-    end)
-    yPos = yPos + 38
-    
-    addButton(vipFrame, "💨 Super Speed", yPos, Color3.fromRGB(255, 215, 0), function()
-        humanoid.WalkSpeed = 100
-    end)
-    yPos = yPos + 38
-    
-    addButton(vipFrame, "🛡️ God Mode", yPos, Color3.fromRGB(255, 215, 0), function()
-        humanoid.MaxHealth = math.huge
-        humanoid.Health = math.huge
-    end)
-    yPos = yPos + 38
-    
-    addButton(vipFrame, "🔫 Kill All", yPos, Color3.fromRGB(255, 0, 0), function()
-        for _, p in ipairs(game.Players:GetPlayers()) do
-            if p ~= player then
-                p.Character:BreakJoints()
-            end
-        end
-    end)
-else
-    local locked = Instance.new("TextLabel")
-    locked.Size = UDim2.new(1, 0, 1, 0)
-    locked.Text = "🔒 VIP LOCKED\nAdmin Only"
-    locked.TextColor3 = Color3.fromRGB(100, 100, 100)
-    locked.TextScaled = true
-    locked.Font = Enum.Font.Gotham
-    locked.BackgroundTransparency = 1
-    locked.Parent = vipFrame
-end
-
--- ============================
--- قسم SCRIPTS
--- ============================
-local scriptsFrame = Instance.new("Frame")
-scriptsFrame.Size = UDim2.new(1, 0, 1, 0)
-scriptsFrame.BackgroundTransparency = 1
-scriptsFrame.Parent = contentFrame
-sectionContents["scripts"] = scriptsFrame
-
-yPos = 10
-addButton(scriptsFrame, "📜 Load Script", yPos, Color3.fromRGB(0, 200, 200), function()
-    print("📜 Loading script...")
-    -- loadstring(game:HttpGet("https://raw.githubusercontent.com/example/script.lua"))()
-end)
-yPos = yPos + 38
-
-addButton(scriptsFrame, "🔄 Reload UI", yPos, Color3.fromRGB(0, 200, 200), function()
-    screenGui:Destroy()
-    print("🔄 UI Reloaded")
-end)
-
--- ============================
--- قسم INFO
--- ============================
-local infoFrame = Instance.new("Frame")
-infoFrame.Size = UDim2.new(1, 0, 1, 0)
-infoFrame.BackgroundTransparency = 1
-infoFrame.Parent = contentFrame
-sectionContents["info"] = infoFrame
-
-yPos = 10
-addButton(infoFrame, "📊 Show Stats", yPos, Color3.fromRGB(200, 200, 0), function()
+addButton(miscFrame, "📊 Show Stats", y, Color3.fromRGB(200, 0, 200), function()
     print("📊 Health:", humanoid.Health, "Speed:", humanoid.WalkSpeed)
 end)
-yPos = yPos + 38
+y = y + 35
 
-addButton(infoFrame, "👤 Player Info", yPos, Color3.fromRGB(200, 200, 0), function()
+addButton(miscFrame, "👤 Player Info", y, Color3.fromRGB(200, 0, 200), function()
     print("👤 Name:", player.Name)
-    print("Team:", player.TeamColor and player.TeamColor.Name or "None")
     print("Admin:", isAdmin and "YES" or "NO")
 end)
 
@@ -396,26 +426,14 @@ updateVisibleSection()
 -- حقوق
 -- ============================
 local rights = Instance.new("TextLabel")
-rights.Size = UDim2.new(1, 0, 0, 20)
-rights.Position = UDim2.new(0, 0, 1, -25)
-rights.Text = "© BATO | " .. (isAdmin and "👑 ADMIN: Mohammad_kurdish73" or "🔒 USER")
+rights.Size = UDim2.new(1, 0, 0, 18)
+rights.Position = UDim2.new(0, 0, 1, -22)
+rights.Text = "© BATO | " .. (isAdmin and "👑 ADMIN" or "🔒 USER")
 rights.TextColor3 = isAdmin and Color3.fromRGB(255, 215, 0) or Color3.fromRGB(150, 0, 150)
 rights.TextScaled = true
 rights.Font = Enum.Font.Gotham
 rights.BackgroundTransparency = 1
 rights.Parent = mainFrame
-
--- ============================
--- زر إخفاء/إظهار الواجهة
--- ============================
-local isVisible = true
-hideBtn.MouseButton1Click:Connect(function()
-    isVisible = not isVisible
-    mainFrame.Visible = isVisible
-    glow.Visible = isVisible
-    eyeFrame.Visible = isVisible
-    hideBtn.Image = isVisible and "rbxassetid://6031094667" or "rbxassetid://6031094554"
-end)
 
 -- ============================
 -- سحب الواجهة
@@ -449,6 +467,6 @@ end)
 -- ============================
 -- تشغيل السكربت
 -- ============================
-print("🔥 BATO ULTIMATE UI v9.0 Loaded.")
+print("🔥 BATO ULTIMATE UI v10.0 Loaded.")
 print("👑 Admin: Mohammad_kurdish73")
-print("🌟 All VIP features unlocked.")
+print("🌟 All features ready.")
