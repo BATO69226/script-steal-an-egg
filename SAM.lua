@@ -1,12 +1,12 @@
--- BATO STEALER V9 - النهائي
--- جميع الحقوق محفوظة | BATO
+-- BATO STEALER V11 - EXACT MATCH + TOGGLE BUTTON
+-- All Rights Reserved | BATO
 
 local p=game.Players.LocalPlayer
 local c=p.Character or p.CharacterAdded:Wait()
 local h=c:WaitForChild("Humanoid")
 local r=c:WaitForChild("HumanoidRootPart")
 
--- ==================== شاشة التحميل ====================
+-- ==================== LOADING SCREEN ====================
 local loader=Instance.new("ScreenGui")
 loader.Name="BATO_LOADER"
 loader.Parent=p.PlayerGui
@@ -31,7 +31,7 @@ local ls=Instance.new("TextLabel")
 ls.Size=UDim2.new(1,0,0,60)
 ls.Position=UDim2.new(0,0,0.45,0)
 ls.BackgroundTransparency=1
-ls.Text="STEALER V9"
+ls.Text="STEALER V11"
 ls.TextColor3=Color3.fromRGB(255,50,50)
 ls.TextScaled=true
 ls.Font=Enum.Font.Gotham
@@ -71,7 +71,7 @@ lt2.Parent=lf
 for i=0,1,0.02 do
     wait(0.01)
     bf.Size=UDim2.new(i,0,1,0)
-    lt2.Text="جاري التحميل... "..math.floor(i*100).."%"
+    lt2.Text="Loading... "..math.floor(i*100).."%"
     lt.Size=UDim2.new(i,0,0,100*i)
     lf.BackgroundTransparency=0.2-(i*0.2)
 end
@@ -81,12 +81,13 @@ lf:TweenSize(UDim2.new(0,0,0,0),"Out","Quad",0.3,true)
 wait(0.3)
 loader:Destroy()
 
--- ==================== الواجهة الرئيسية ====================
+-- ==================== MAIN GUI ====================
 local gui=Instance.new("ScreenGui")
 gui.Name="BATO_EGG_GUI"
 gui.Parent=p.PlayerGui
+gui.Enabled=true
 
--- ==================== الخلفية المتحركة ====================
+-- ==================== ANIMATED BACKGROUND ====================
 local bg=Instance.new("Frame")
 bg.Size=UDim2.new(1,0,1,0)
 bg.BackgroundColor3=Color3.fromRGB(5,0,0)
@@ -129,13 +130,13 @@ for i=1,15 do
     end)
 end
 
--- ==================== الإطار الرئيسي (حجم صغير) ====================
+-- ==================== MAIN FRAME ====================
 local f=Instance.new("Frame")
-f.Size=UDim2.new(0,450,0,550)
-f.Position=UDim2.new(0.5,-225,0.5,-275)
-f.BackgroundColor3=Color3.fromRGB(10,0,0)
+f.Size=UDim2.new(0,500,0,600)
+f.Position=UDim2.new(0.5,-250,0.5,-300)
+f.BackgroundColor3=Color3.fromRGB(8,0,0)
 f.BorderSizePixel=0
-f.BackgroundTransparency=0.15
+f.BackgroundTransparency=0.1
 f.Parent=gui
 
 local c1=Instance.new("UICorner")
@@ -148,7 +149,7 @@ g1.Thickness=2
 g1.ApplyStrokeMode=Enum.ApplyStrokeMode.Border
 g1.Parent=f
 
--- شريط العنوان
+-- Title Bar
 local t=Instance.new("Frame")
 t.Size=UDim2.new(1,0,0,45)
 t.BackgroundColor3=Color3.fromRGB(80,0,0)
@@ -163,7 +164,7 @@ c2.Parent=t
 local l=Instance.new("TextLabel")
 l.Size=UDim2.new(1,0,1,0)
 l.BackgroundTransparency=1
-l.Text="🔥 BATO V9 🔥"
+l.Text="🔥 BATO V11 🔥"
 l.TextColor3=Color3.fromRGB(255,215,0)
 l.TextScaled=true
 l.Font=Enum.Font.GothamBold
@@ -178,15 +179,40 @@ spawn(function()
     end
 end)
 
--- ==================== دالة إضافة الأزرار ====================
-local function addBtn(text,x,y,w,h,col,tcol,func)
+-- ==================== GUI TOGGLE BUTTON (Small) ====================
+local toggleGuiBtn=Instance.new("TextButton")
+toggleGuiBtn.Size=UDim2.new(0,30,0,30)
+toggleGuiBtn.Position=UDim2.new(0.93,0,0.02,0)
+toggleGuiBtn.Text="🔴"
+toggleGuiBtn.BackgroundColor3=Color3.fromRGB(40,0,0)
+toggleGuiBtn.BackgroundTransparency=0.2
+toggleGuiBtn.TextColor3=Color3.fromRGB(255,255,255)
+toggleGuiBtn.Font=Enum.Font.GothamBold
+toggleGuiBtn.TextScaled=true
+toggleGuiBtn.Parent=f
+
+local guiVisible=true
+toggleGuiBtn.MouseButton1Click:Connect(function()
+    guiVisible=not guiVisible
+    f.Visible=guiVisible
+    if guiVisible then
+        toggleGuiBtn.Text="🔴"
+        toggleGuiBtn.BackgroundColor3=Color3.fromRGB(40,0,0)
+    else
+        toggleGuiBtn.Text="🟢"
+        toggleGuiBtn.BackgroundColor3=Color3.fromRGB(0,80,0)
+    end
+end)
+
+-- ==================== BUTTONS (EXACT MATCH) ====================
+local function addBtn(text,x,y,w,h,func)
     local btn=Instance.new("TextButton")
     btn.Size=UDim2.new(0,w,0,h)
     btn.Position=UDim2.new(x,0,y,0)
     btn.Text=text
-    btn.BackgroundColor3=col or Color3.fromRGB(40,0,0)
+    btn.BackgroundColor3=Color3.fromRGB(40,0,0)
     btn.BackgroundTransparency=0.2
-    btn.TextColor3=tcol or Color3.fromRGB(255,255,255)
+    btn.TextColor3=Color3.fromRGB(255,255,255)
     btn.Font=Enum.Font.GothamBold
     btn.TextScaled=true
     btn.Parent=f
@@ -194,13 +220,12 @@ local function addBtn(text,x,y,w,h,col,tcol,func)
     return btn
 end
 
--- ==================== الأزرار حسب الصورة ====================
--- الصف الأول
+-- Row 1: TOGGLE | Slow Mode | Bypass Anti cheat
 local ts=false
-local b1=addBtn("⏹ TOGGLE: OFF",0.03,0.10,130,30,Color3.fromRGB(40,0,0),Color3.fromRGB(255,100,100),function()
+local b1=addBtn("TOGGLE",0.03,0.10,130,35,function()
     ts=not ts
     if ts then
-        b1.Text="▶ TOGGLE: ON"
+        b1.Text="TOGGLE: ON"
         b1.BackgroundColor3=Color3.fromRGB(0,80,0)
         for _,v in pairs(game.Workspace:GetDescendants()) do
             if v:IsA("BasePart") and v.Name=="Egg" then
@@ -209,7 +234,7 @@ local b1=addBtn("⏹ TOGGLE: OFF",0.03,0.10,130,30,Color3.fromRGB(40,0,0),Color3
             end
         end
     else
-        b1.Text="⏹ TOGGLE: OFF"
+        b1.Text="TOGGLE"
         b1.BackgroundColor3=Color3.fromRGB(40,0,0)
         for _,v in pairs(game.Workspace:GetDescendants()) do
             if v:IsA("BasePart") and v.Name=="Egg" then
@@ -220,12 +245,12 @@ local b1=addBtn("⏹ TOGGLE: OFF",0.03,0.10,130,30,Color3.fromRGB(40,0,0),Color3
     end
 end)
 
-addBtn("🐢 Slow Mode",0.36,0.10,130,30,Color3.fromRGB(40,0,0),Color3.fromRGB(255,200,0),function()
+addBtn("Slow Mode",0.36,0.10,130,35,function()
     h.WalkSpeed=10
     h.JumpPower=30
 end)
 
-addBtn("🛡 Bypass AC",0.69,0.10,130,30,Color3.fromRGB(80,0,0),Color3.fromRGB(0,255,0),function()
+addBtn("Bypass Anti cheat",0.69,0.10,130,35,function()
     for _,v in pairs(game:GetDescendants()) do
         if v:IsA("Script") and (v.Name:lower():find("anticheat") or v.Name:lower():find("anti-cheat")) then
             v.Disabled=true
@@ -233,32 +258,32 @@ addBtn("🛡 Bypass AC",0.69,0.10,130,30,Color3.fromRGB(80,0,0),Color3.fromRGB(0
     end
 end)
 
--- الصف الثاني
-addBtn("🛒 Shop",0.03,0.22,100,30,Color3.fromRGB(0,40,80),Color3.fromRGB(100,200,255),function()
+-- Row 2: Shop | Move to Stand | Respawn Character | Index
+addBtn("Shop",0.03,0.20,110,35,function()
     local s=p.PlayerGui:FindFirstChild("ShopGUI")
     if s then s.Enabled=not s.Enabled end
 end)
 
-addBtn("🚶 Stand",0.27,0.22,100,30,Color3.fromRGB(40,40,0),Color3.fromRGB(255,255,100),function()
+addBtn("Move to Stand",0.27,0.20,110,35,function()
     local s=game.Workspace:FindFirstChild("Stand") or game.Workspace:FindFirstChild("SpawnLocation")
     if s and r then r.CFrame=s.CFrame+Vector3.new(0,5,0) end
 end)
 
-addBtn("💀 Respawn",0.50,0.22,100,30,Color3.fromRGB(80,0,0),Color3.fromRGB(255,50,50),function()
+addBtn("Respawn Character",0.50,0.20,110,35,function()
     if c then c:BreakJoints() end
 end)
 
-addBtn("📂 Index",0.73,0.22,100,30,Color3.fromRGB(0,40,40),Color3.fromRGB(0,255,200),function()
+addBtn("Index",0.73,0.20,110,35,function()
     local i=p.PlayerGui:FindFirstChild("IndexGUI")
     if i then i.Enabled=not i.Enabled end
 end)
 
--- الصف الثالث (TP Walk & TP Speed)
+-- Row 3: TP Walk: OFF | TP Speed: 300 Studs/s
 local tws=false
-local b2=addBtn("🚀 TP Walk: OFF",0.03,0.35,170,30,Color3.fromRGB(40,0,40),Color3.fromRGB(200,100,255),function()
+local b2=addBtn("TP Walk: OFF",0.03,0.32,170,35,function()
     tws=not tws
     if tws then
-        b2.Text="🚀 TP Walk: ON"
+        b2.Text="TP Walk: ON"
         b2.BackgroundColor3=Color3.fromRGB(0,80,80)
         game:GetService("RunService").Heartbeat:Connect(function()
             if tws and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
@@ -270,23 +295,23 @@ local b2=addBtn("🚀 TP Walk: OFF",0.03,0.35,170,30,Color3.fromRGB(40,0,40),Col
             end
         end)
     else
-        b2.Text="🚀 TP Walk: OFF"
+        b2.Text="TP Walk: OFF"
         b2.BackgroundColor3=Color3.fromRGB(40,0,40)
     end
 end)
 
 local sp=300
-local b3=addBtn("⚡ TP Speed: 300",0.45,0.35,170,30,Color3.fromRGB(40,40,0),Color3.fromRGB(255,200,50),function()
+local b3=addBtn("TP Speed: 300 Studs/s",0.45,0.32,170,35,function()
     sp=sp+100
     if sp>1000 then sp=100 end
-    b3.Text="⚡ TP Speed: "..sp
+    b3.Text="TP Speed: "..sp.." Studs/s"
     h.WalkSpeed=sp
 end)
 
--- ==================== عرض الأموال ====================
+-- ==================== MONEY DISPLAY ====================
 local mf=Instance.new("Frame")
-mf.Size=UDim2.new(0,200,0,50)
-mf.Position=UDim2.new(0.5,-100,0.55,0)
+mf.Size=UDim2.new(0,250,0,60)
+mf.Position=UDim2.new(0.5,-125,0.48,0)
 mf.BackgroundColor3=Color3.fromRGB(0,50,0)
 mf.BackgroundTransparency=0.3
 mf.BorderSizePixel=0
@@ -300,7 +325,7 @@ local ml=Instance.new("TextLabel")
 ml.Size=UDim2.new(1,0,0.5,0)
 ml.Position=UDim2.new(0,0,0,0)
 ml.BackgroundTransparency=1
-ml.Text="💰 $43.2M"
+ml.Text="43.2M"
 ml.TextColor3=Color3.fromRGB(0,255,0)
 ml.TextScaled=true
 ml.Font=Enum.Font.GothamBold
@@ -310,28 +335,28 @@ local ml2=Instance.new("TextLabel")
 ml2.Size=UDim2.new(1,0,0.5,0)
 ml2.Position=UDim2.new(0,0,0.5,0)
 ml2.BackgroundTransparency=1
-ml2.Text="💎 $1.9T | ⏱ 1m 14s"
+ml2.Text="$1.9T  in 1m 14s"
 ml2.TextColor3=Color3.fromRGB(255,215,0)
 ml2.TextScaled=true
 ml2.Font=Enum.Font.Gotham
 ml2.Parent=mf
 
--- ==================== حقوق النشر ====================
+-- ==================== FOOTER ====================
 local ft=Instance.new("TextLabel")
 ft.Size=UDim2.new(1,0,0,20)
-ft.Position=UDim2.new(0,0,0.94,0)
+ft.Position=UDim2.new(0,0,0.95,0)
 ft.BackgroundTransparency=1
-ft.Text="⚡ BATO V9 | All Rights Reserved ⚡"
+ft.Text="⚡ BATO V11 | All Rights Reserved ⚡"
 ft.TextColor3=Color3.fromRGB(150,0,0)
 ft.TextScaled=true
 ft.Font=Enum.Font.Gotham
 ft.Parent=f
 
--- ==================== أنميشن الفتح ====================
+-- ==================== OPENING ANIMATION ====================
 for i=0,1,0.05 do
     wait(0.01)
-    f.BackgroundTransparency=0.15-i*0.05
-    f.Position=UDim2.new(0.5,-225,0.5,-275+i*15)
+    f.BackgroundTransparency=0.1-i*0.05
+    f.Position=UDim2.new(0.5,-250,0.5,-300+i*15)
 end
 
-print("[BATO] V9 النهائي تم تشغيله بنجاح!")
+print("[BATO] V11 Loaded Successfully!")
