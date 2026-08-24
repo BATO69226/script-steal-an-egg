@@ -1,313 +1,227 @@
--- =====================================
--- Script: SAM v4.0 (BAT0 ULTIMATE)
--- Game: Steal an Egg
--- Features: GUI, Anti-Ban, All Options
--- =====================================
-
-local player = game:GetService("Players").LocalPlayer
+-- SAM v4.1 - BAT0 EDITION (واجهة يدوية)
+local p = game:GetService("Players").LocalPlayer
 local gui = Instance.new("ScreenGui")
-local mainFrame = Instance.new("Frame")
+local frame = Instance.new("Frame")
 local title = Instance.new("TextLabel")
-local closeBtn = Instance.new("TextButton")
-local tab1 = Instance.new("TextButton")
-local tab2 = Instance.new("TextButton")
-local tab3 = Instance.new("TextButton")
-local content = Instance.new("Frame")
+local close = Instance.new("TextButton")
+
+local buttons = {}
+local toggles = {}
 
 -- ===== أنيميشن الافتتاح =====
 local function openAnimation()
-    mainFrame.Size = UDim2.new(0, 0, 0, 0)
-    mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    frame.Size = UDim2.new(0, 0, 0, 0)
+    frame.Position = UDim2.new(0.5, 0, 0.5, 0)
     for i = 1, 30 do
-        mainFrame.Size = UDim2.new(0, i*12, 0, i*10)
-        mainFrame.Position = UDim2.new(0.5, -i*6, 0.5, -i*5)
+        frame.Size = UDim2.new(0, i*12, 0, i*8)
+        frame.Position = UDim2.new(0.5, -i*6, 0.5, -i*4)
         wait(0.02)
     end
 end
 
 -- ===== الواجهة الرئيسية =====
 gui.Name = "SAM_GUI"
-gui.Parent = player:WaitForChild("PlayerGui")
+gui.Parent = p:WaitForChild("PlayerGui")
 
-mainFrame.Size = UDim2.new(0, 360, 0, 420)
-mainFrame.Position = UDim2.new(0.5, -180, 0.5, -210)
-mainFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 20)
-mainFrame.BackgroundTransparency = 0.05
-mainFrame.BorderSizePixel = 3
-mainFrame.BorderColor3 = Color3.fromRGB(255, 215, 0)
-mainFrame.ClipsDescendants = true
-mainFrame.Parent = gui
+frame.Size = UDim2.new(0, 280, 0, 320)
+frame.Position = UDim2.new(0.5, -140, 0.5, -160)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
+frame.BackgroundTransparency = 0.1
+frame.BorderSizePixel = 2
+frame.BorderColor3 = Color3.fromRGB(255, 215, 0)
+frame.ClipsDescendants = true
+frame.Parent = gui
 
 -- خلفية متدرجة
-local gradient = Instance.new("UIGradient")
-gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(25, 25, 50)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 5, 20))
+local grad = Instance.new("UIGradient")
+grad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 60)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 10, 20))
 })
-gradient.Parent = mainFrame
+grad.Parent = frame
 
--- شعار مع أنيميشن
-local logo = Instance.new("TextLabel")
-logo.Size = UDim2.new(1, 0, 0, 50)
-logo.Position = UDim2.new(0, 0, 0, 5)
-logo.BackgroundTransparency = 1
-logo.Text = "⚡ BAT0 ⚡"
-logo.TextColor3 = Color3.fromRGB(255, 215, 0)
-logo.TextScaled = true
-logo.Font = Enum.Font.Bold
-logo.Parent = mainFrame
+-- العنوان
+title.Size = UDim2.new(1, 0, 0, 35)
+title.Position = UDim2.new(0, 0, 0, 5)
+title.BackgroundTransparency = 1
+title.Text = "⚡ BAT0 ⚡"
+title.TextColor3 = Color3.fromRGB(255, 215, 0)
+title.TextScaled = true
+title.Font = Enum.Font.Bold
+title.Parent = frame
 
 -- زر الإغلاق
-closeBtn.Size = UDim2.new(0, 30, 0, 30)
-closeBtn.Position = UDim2.new(1, -35, 0, 5)
-closeBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-closeBtn.Text = "✕"
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeBtn.TextScaled = true
-closeBtn.Font = Enum.Font.Bold
-closeBtn.Parent = mainFrame
+close.Size = UDim2.new(0, 25, 0, 25)
+close.Position = UDim2.new(1, -30, 0, 5)
+close.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+close.Text = "✕"
+close.TextColor3 = Color3.fromRGB(255, 255, 255)
+close.TextScaled = true
+close.Font = Enum.Font.Bold
+close.Parent = frame
+close.MouseButton1Click:Connect(function() gui:Destroy() end)
 
--- ===== علامات التبويب =====
-local tabs = {"🔥 الرئيسية", "⚙️ الإعدادات", "🛡️ الحماية"}
-local tabButtons = {}
-
-for i, name in ipairs(tabs) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 110, 0, 35)
-    btn.Position = UDim2.new(0.03 + (i-1) * 0.33, 0, 0, 55)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
-    btn.Text = name
-    btn.TextColor3 = Color3.fromRGB(200, 200, 255)
-    btn.TextScaled = true
-    btn.Font = Enum.Font.Bold
-    btn.Parent = mainFrame
-    tabButtons[i] = btn
-end
-
--- ===== محتوى التبويب =====
-content.Size = UDim2.new(0.94, 0, 0, 290)
-content.Position = UDim2.new(0.03, 0, 0, 95)
-content.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
-content.BackgroundTransparency = 0.3
-content.BorderSizePixel = 1
-content.BorderColor3 = Color3.fromRGB(255, 215, 0)
-content.Parent = mainFrame
-
--- ===== التبويب 1: الرئيسية =====
-local mainContent = Instance.new("Frame")
-mainContent.Size = UDim2.new(1, 0, 1, 0)
-mainContent.BackgroundTransparency = 1
-mainContent.Parent = content
-
--- قائمة الخيارات
+-- ===== الأزرار والخيارات =====
 local options = {
-    {"🚀 سرعة خارقة", "Speed"},
+    {"🚀 سرعة", "Speed"},
     {"✈️ طيران", "Fly"},
-    {"🥚 سرقة تلقائية", "AutoSteal"},
-    {"🛡️ وضع AFK", "AntiAFK"},
-    {"💰 بيع تلقائي", "AutoSell"},
-    {"👁️ رؤية البيض", "ESP"}
+    {"🥚 سرقة", "AutoSteal"},
+    {"🛡️ AFK", "AntiAFK"},
+    {"👁️ ESP", "ESP"}
 }
 
-local toggles = {}
+-- حلقة لإنشاء الأزرار
 for i, opt in ipairs(options) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0, 150, 0, 30)
-    btn.Position = UDim2.new(0.05 + (i-1)%2 * 0.5, 0, 0.05 + math.floor((i-1)/2) * 0.15, 0)
+    btn.Size = UDim2.new(0, 120, 0, 30)
+    btn.Position = UDim2.new(0.05 + (i-1)%2 * 0.5, 0, 0.15 + math.floor((i-1)/2) * 0.15, 0)
     btn.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
     btn.Text = opt[1] .. " [OFF]"
-    btn.TextColor3 = Color3.fromRGB(200, 200, 255)
+    btn.TextColor3 = Color3.fromRGB(220, 220, 255)
     btn.TextScaled = true
     btn.Font = Enum.Font.Bold
-    btn.Parent = mainContent
-    toggles[opt[2]] = {btn = btn, state = false}
-    
-    btn.MouseButton1Click:Connect(function()
-        toggles[opt[2]].state = not toggles[opt[2]].state
-        local stateText = toggles[opt[2]].state and "ON" or "OFF"
-        btn.Text = opt[1] .. " [" .. stateText .. "]"
-        btn.BackgroundColor3 = toggles[opt[2]].state and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 80)
-        -- تنفيذ الخيار
-        if opt[2] == "Speed" then
-            player.Character.Humanoid.WalkSpeed = toggles[opt[2]].state and 50 or 16
-        elseif opt[2] == "Fly" then
-            local bv = player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity")
-            if toggles[opt[2]].state then
-                if not bv then
-                    bv = Instance.new("BodyVelocity")
-                    bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
-                    bv.Parent = player.Character.HumanoidRootPart
-                end
-                game:GetService("RunService").Heartbeat:Connect(function()
-                    if toggles["Fly"].state then
-                        bv.Velocity = Vector3.new(0, 25, 0)
-                    end
-                end)
-            else
-                if bv then bv:Destroy() end
+    btn.Parent = frame
+    buttons[opt[2]] = btn
+    toggles[opt[2]] = false
+end
+
+-- زر إعادة تعيين
+local reset = Instance.new("TextButton")
+reset.Size = UDim2.new(0.8, 0, 0, 30)
+reset.Position = UDim2.new(0.1, 0, 0.8, 0)
+reset.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
+reset.Text = "🔄 إيقاف الكل"
+reset.TextColor3 = Color3.fromRGB(255, 255, 255)
+reset.TextScaled = true
+reset.Font = Enum.Font.Bold
+reset.Parent = frame
+
+-- ===== دوال التشغيل =====
+local function setSpeed(state)
+    local char = p.Character or p.CharacterAdded:Wait()
+    local hum = char:WaitForChild("Humanoid")
+    hum.WalkSpeed = state and 50 or 16
+end
+
+local function setFly(state)
+    local char = p.Character or p.CharacterAdded:Wait()
+    local root = char:WaitForChild("HumanoidRootPart")
+    local bv = root:FindFirstChild("BodyVelocity")
+    if state then
+        if not bv then
+            bv = Instance.new("BodyVelocity")
+            bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+            bv.Parent = root
+        end
+        game:GetService("RunService").Heartbeat:Connect(function()
+            if toggles["Fly"] then
+                bv.Velocity = Vector3.new(0, 20, 0)
             end
-        elseif opt[2] == "AutoSteal" then
-            spawn(function()
-                while toggles["AutoSteal"].state do
-                    for _, o in pairs(workspace:GetDescendants()) do
-                        if o:IsA("Part") and o.Name:lower():find("egg") then
-                            player.Character.HumanoidRootPart.CFrame = CFrame.new(o.Position)
+        end)
+    else
+        if bv then bv:Destroy() end
+    end
+end
+
+local function setAutoSteal(state)
+    if state then
+        spawn(function()
+            while toggles["AutoSteal"] do
+                for _, o in pairs(workspace:GetDescendants()) do
+                    if o:IsA("Part") and o.Name:lower():find("egg") then
+                        local char = p.Character
+                        if char then
+                            char.HumanoidRootPart.CFrame = CFrame.new(o.Position)
                             wait(0.2)
                             local cd = o:FindFirstChild("ClickDetector")
                             if cd then fireclickdetector(cd) end
                             wait(0.3)
                         end
                     end
-                    wait(0.5)
                 end
-            end)
-        elseif opt[2] == "AntiAFK" then
-            spawn(function()
-                while toggles["AntiAFK"].state do
-                    player.Character.Humanoid:MoveTo(player.Character.HumanoidRootPart.Position + Vector3.new(0,0,1))
-                    wait(30)
-                    player.Character.Humanoid:MoveTo(player.Character.HumanoidRootPart.Position + Vector3.new(0,0,-1))
-                    wait(30)
-                end
-            end)
-        elseif opt[2] == "AutoSell" then
-            spawn(function()
-                while toggles["AutoSell"].state do
-                    -- محاكاة البيع (حسب نظام اللعبة)
-                    print("🔄 بيع البيض...")
-                    wait(5)
-                end
-            end)
-        elseif opt[2] == "ESP" then
-            spawn(function()
-                while toggles["ESP"].state do
-                    for _, o in pairs(workspace:GetDescendants()) do
-                        if o:IsA("Part") and o.Name:lower():find("egg") then
-                            local highlight = o:FindFirstChild("Highlight")
-                            if not highlight then
-                                highlight = Instance.new("Highlight")
-                                highlight.FillColor = Color3.fromRGB(255, 0, 0)
-                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                                highlight.Parent = o
-                            end
-                        end
-                    end
-                    wait(1)
-                end
-            end)
-        end
-    end)
-end
-
--- ===== التبويب 2: الإعدادات =====
-local settingsContent = Instance.new("Frame")
-settingsContent.Size = UDim2.new(1, 0, 1, 0)
-settingsContent.BackgroundTransparency = 1
-settingsContent.Visible = false
-settingsContent.Parent = content
-
-local speedSlider = Instance.new("TextLabel")
-speedSlider.Size = UDim2.new(0.8, 0, 0, 30)
-speedSlider.Position = UDim2.new(0.1, 0, 0.1, 0)
-speedSlider.BackgroundTransparency = 1
-speedSlider.Text = "⚡ السرعة: 50"
-speedSlider.TextColor3 = Color3.fromRGB(200, 200, 255)
-speedSlider.TextScaled = true
-speedSlider.Font = Enum.Font.Bold
-speedSlider.Parent = settingsContent
-
--- زر إعادة تعيين
-local resetBtn = Instance.new("TextButton")
-resetBtn.Size = UDim2.new(0.6, 0, 0, 40)
-resetBtn.Position = UDim2.new(0.2, 0, 0.3, 0)
-resetBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-resetBtn.Text = "🔄 إعادة تعيين الكل"
-resetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-resetBtn.TextScaled = true
-resetBtn.Font = Enum.Font.Bold
-resetBtn.Parent = settingsContent
-
-resetBtn.MouseButton1Click:Connect(function()
-    for _, toggle in pairs(toggles) do
-        toggle.state = false
-        toggle.btn.Text = toggle.btn.Text:gsub("%[.-%]", "[OFF]")
-        toggle.btn.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
-    end
-    player.Character.Humanoid.WalkSpeed = 16
-    local bv = player.Character.HumanoidRootPart:FindFirstChild("BodyVelocity")
-    if bv then bv:Destroy() end
-end)
-
--- ===== التبويب 3: الحماية =====
-local protectionContent = Instance.new("Frame")
-protectionContent.Size = UDim2.new(1, 0, 1, 0)
-protectionContent.BackgroundTransparency = 1
-protectionContent.Visible = false
-protectionContent.Parent = content
-
-local antiBanLabel = Instance.new("TextLabel")
-antiBanLabel.Size = UDim2.new(0.8, 0, 0, 40)
-antiBanLabel.Position = UDim2.new(0.1, 0, 0.1, 0)
-antiBanLabel.BackgroundTransparency = 1
-antiBanLabel.Text = "🛡️ حماية متقدمة من الكشف\n(محاكاة حركة بشرية)"
-antiBanLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
-antiBanLabel.TextScaled = true
-antiBanLabel.Font = Enum.Font.Bold
-antiBanLabel.Parent = protectionContent
-
-local antiBanBtn = Instance.new("TextButton")
-antiBanBtn.Size = UDim2.new(0.6, 0, 0, 40)
-antiBanBtn.Position = UDim2.new(0.2, 0, 0.5, 0)
-antiBanBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
-antiBanBtn.Text = "🛡️ تفعيل الحماية"
-antiBanBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-antiBanBtn.TextScaled = true
-antiBanBtn.Font = Enum.Font.Bold
-antiBanBtn.Parent = protectionContent
-
-local antiBanActive = false
-antiBanBtn.MouseButton1Click:Connect(function()
-    antiBanActive = not antiBanActive
-    antiBanBtn.Text = antiBanActive and "✅ الحماية مفعلة" or "🛡️ تفعيل الحماية"
-    antiBanBtn.BackgroundColor3 = antiBanActive and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(0, 150, 0)
-    if antiBanActive then
-        spawn(function()
-            while antiBanActive do
-                -- محاكاة حركة بشرية عشوائية
-                local randomWait = math.random(10, 30)
-                local direction = math.random(1, 4)
-                local move = Vector3.new(
-                    direction == 1 and 1 or direction == 2 and -1 or 0,
-                    0,
-                    direction == 3 and 1 or direction == 4 and -1 or 0
-                )
-                player.Character.Humanoid:MoveTo(player.Character.HumanoidRootPart.Position + move)
-                wait(randomWait)
+                wait(0.5)
             end
         end)
     end
-end)
+end
 
--- ===== التبديل بين التبويبات =====
-for i, btn in ipairs(tabButtons) do
-    btn.MouseButton1Click:Connect(function()
-        mainContent.Visible = (i == 1)
-        settingsContent.Visible = (i == 2)
-        protectionContent.Visible = (i == 3)
-        for _, b in ipairs(tabButtons) do
-            b.BackgroundColor3 = Color3.fromRGB(30, 30, 60)
+local function setAntiAFK(state)
+    if state then
+        spawn(function()
+            while toggles["AntiAFK"] do
+                local char = p.Character
+                if char then
+                    char.Humanoid:MoveTo(char.HumanoidRootPart.Position + Vector3.new(0,0,1))
+                    wait(30)
+                    char.Humanoid:MoveTo(char.HumanoidRootPart.Position + Vector3.new(0,0,-1))
+                    wait(30)
+                end
+            end
+        end)
+    end
+end
+
+local function setESP(state)
+    if state then
+        spawn(function()
+            while toggles["ESP"] do
+                for _, o in pairs(workspace:GetDescendants()) do
+                    if o:IsA("Part") and o.Name:lower():find("egg") then
+                        local hl = o:FindFirstChild("Highlight")
+                        if not hl then
+                            hl = Instance.new("Highlight")
+                            hl.FillColor = Color3.fromRGB(255, 0, 0)
+                            hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                            hl.Parent = o
+                        end
+                    end
+                end
+                wait(1)
+            end
+        end)
+    else
+        for _, o in pairs(workspace:GetDescendants()) do
+            if o:IsA("Part") and o.Name:lower():find("egg") then
+                local hl = o:FindFirstChild("Highlight")
+                if hl then hl:Destroy() end
+            end
         end
-        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 120)
+    end
+end
+
+-- ===== ربط الأزرار بالوظائف =====
+for opt, btn in pairs(buttons) do
+    btn.MouseButton1Click:Connect(function()
+        toggles[opt] = not toggles[opt]
+        local state = toggles[opt]
+        btn.Text = opt .. " [" .. (state and "ON" or "OFF") .. "]"
+        btn.BackgroundColor3 = state and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 80)
+
+        if opt == "Speed" then setSpeed(state)
+        elseif opt == "Fly" then setFly(state)
+        elseif opt == "AutoSteal" then setAutoSteal(state)
+        elseif opt == "AntiAFK" then setAntiAFK(state)
+        elseif opt == "ESP" then setESP(state)
+        end
     end)
 end
 
--- ===== زر الإغلاق =====
-closeBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
+-- زر إعادة التعيين
+reset.MouseButton1Click:Connect(function()
+    for opt, btn in pairs(buttons) do
+        toggles[opt] = false
+        btn.Text = opt .. " [OFF]"
+        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 80)
+    end
+    setSpeed(false)
+    setFly(false)
+    setESP(false)
+    local char = p.Character
+    if char then
+        char.Humanoid.WalkSpeed = 16
+    end
 end)
 
 -- ===== تشغيل الأنيميشن =====
 openAnimation()
-
--- ===== إرسال تأكيد التشغيل =====
-print("✅ SAM v4.0 - BAT0 ULTIMATE يعمل الآن!")
+print("✅ SAM v4.1 - BAT0 جاهز! فعّل الخيارات يدوياً.")
