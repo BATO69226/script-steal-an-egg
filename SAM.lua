@@ -1,4 +1,4 @@
--- BATO STEALER V11 - EXACT MATCH + TOGGLE BUTTON
+-- BATO STEALER V13 - EXACT MATCH WITH TOGGLE BUTTON
 -- All Rights Reserved | BATO
 
 local p=game.Players.LocalPlayer
@@ -31,7 +31,7 @@ local ls=Instance.new("TextLabel")
 ls.Size=UDim2.new(1,0,0,60)
 ls.Position=UDim2.new(0,0,0.45,0)
 ls.BackgroundTransparency=1
-ls.Text="STEALER V11"
+ls.Text="STEALER V13"
 ls.TextColor3=Color3.fromRGB(255,50,50)
 ls.TextScaled=true
 ls.Font=Enum.Font.Gotham
@@ -164,7 +164,7 @@ c2.Parent=t
 local l=Instance.new("TextLabel")
 l.Size=UDim2.new(1,0,1,0)
 l.BackgroundTransparency=1
-l.Text="🔥 BATO V11 🔥"
+l.Text="🔥 BATO V13 🔥"
 l.TextColor3=Color3.fromRGB(255,215,0)
 l.TextScaled=true
 l.Font=Enum.Font.GothamBold
@@ -346,7 +346,7 @@ local ft=Instance.new("TextLabel")
 ft.Size=UDim2.new(1,0,0,20)
 ft.Position=UDim2.new(0,0,0.95,0)
 ft.BackgroundTransparency=1
-ft.Text="⚡ BATO V11 | All Rights Reserved ⚡"
+ft.Text="⚡ BATO V13 | All Rights Reserved ⚡"
 ft.TextColor3=Color3.fromRGB(150,0,0)
 ft.TextScaled=true
 ft.Font=Enum.Font.Gotham
@@ -359,4 +359,4 @@ for i=0,1,0.05 do
     f.Position=UDim2.new(0.5,-250,0.5,-300+i*15)
 end
 
-print("[BATO] V11 Loaded Successfully!")
+print("[BATO] V13 Loaded Successfully!")
