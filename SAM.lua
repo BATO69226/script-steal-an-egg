@@ -1,6 +1,6 @@
 -- =============================================
--- Script: BATO ULTIMATE UI v10.0
--- Features: Animated Eye, Star Background, Full Sections, Working Buttons
+-- Script: BATO ULTIMATE UI v10.2
+-- Features: Egg Steal & Return, Clean UI
 -- Admin: Mohammad_kurdish73
 -- Rights: BATO
 -- =============================================
@@ -34,35 +34,11 @@ screenGui.Name = "BatoUltimate"
 screenGui.Parent = player.PlayerGui
 
 -- ============================
--- خلفية نجوم متحركة (GIF-like)
--- ============================
-local bg = Instance.new("Frame")
-bg.Size = UDim2.new(1, 0, 1, 0)
-bg.BackgroundColor3 = Color3.fromRGB(5, 0, 5)
-bg.Parent = screenGui
-
--- نجوم متحركة (50 نجمة)
-for i = 1, 50 do
-    local star = Instance.new("Frame")
-    star.Size = UDim2.new(0, math.random(1, 3), 0, math.random(1, 3))
-    star.Position = UDim2.new(math.random(), 0, math.random(), 0)
-    star.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    star.BackgroundTransparency = math.random(3, 8) / 10
-    star.Parent = bg
-    game:GetService("RunService").RenderStepped:Connect(function()
-        star.Position = UDim2.new(star.Position.X.Scale, 0, star.Position.Y.Scale + 0.001, 0)
-        if star.Position.Y.Scale > 1 then
-            star.Position = UDim2.new(math.random(), 0, 0, 0)
-        end
-    end)
-end
-
--- ============================
--- العين الحمراء المتحركة
+-- العين الحمراء (ثابتة)
 -- ============================
 local eyeFrame = Instance.new("Frame")
-eyeFrame.Size = UDim2.new(0, 60, 0, 60)
-eyeFrame.Position = UDim2.new(0.5, -30, 0.08, 0)
+eyeFrame.Size = UDim2.new(0, 50, 0, 50)
+eyeFrame.Position = UDim2.new(0.5, -25, 0.08, 0)
 eyeFrame.BackgroundTransparency = 1
 eyeFrame.Parent = screenGui
 
@@ -73,17 +49,8 @@ eye.ImageColor3 = Color3.fromRGB(255, 0, 0)
 eye.BackgroundTransparency = 1
 eye.Parent = eyeFrame
 
-local eyePulse = 0
-game:GetService("RunService").RenderStepped:Connect(function()
-    eyePulse = eyePulse + 0.05
-    local scale = 1 + math.sin(eyePulse * 5) * 0.05
-    eye.Size = UDim2.new(scale, 0, scale, 0)
-    eye.Position = UDim2.new(0.5 - scale/2, 0, 0.5 - scale/2, 0)
-    eye.ImageTransparency = 0.3 + math.sin(eyePulse * 3) * 0.2
-end)
-
 -- ============================
--- الإطار الرئيسي (مصغر)
+-- الإطار الرئيسي
 -- ============================
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 520, 0, 480)
@@ -93,16 +60,6 @@ mainFrame.BackgroundTransparency = 0.15
 mainFrame.BorderSizePixel = 2
 mainFrame.BorderColor3 = Color3.fromRGB(200, 0, 200)
 mainFrame.Parent = screenGui
-
--- توهج
-local glow = Instance.new("Frame")
-glow.Size = UDim2.new(0, 540, 0, 500)
-glow.Position = UDim2.new(0.5, -270, 0.5, -250)
-glow.BackgroundColor3 = Color3.fromRGB(200, 0, 200)
-glow.BackgroundTransparency = 0.9
-glow.BorderSizePixel = 3
-glow.BorderColor3 = Color3.fromRGB(200, 0, 200)
-glow.Parent = screenGui
 
 -- ============================
 -- العنوان
@@ -118,7 +75,7 @@ title.BackgroundTransparency = 1
 title.Parent = mainFrame
 
 -- ============================
--- زر قفل/فتح الواجهة (على اليسار)
+-- زر قفل/فتح الواجهة
 -- ============================
 local toggleVisBtn = Instance.new("ImageButton")
 toggleVisBtn.Size = UDim2.new(0, 30, 0, 30)
@@ -131,13 +88,12 @@ local isVisible = true
 toggleVisBtn.MouseButton1Click:Connect(function()
     isVisible = not isVisible
     mainFrame.Visible = isVisible
-    glow.Visible = isVisible
     eyeFrame.Visible = isVisible
     toggleVisBtn.Image = isVisible and "rbxassetid://6031094667" or "rbxassetid://6031094554"
 end)
 
 -- ============================
--- زر LOCK (يقفل الأزرار)
+-- زر LOCK
 -- ============================
 local lockBtn = Instance.new("TextButton")
 lockBtn.Size = UDim2.new(0, 70, 0, 22)
@@ -268,7 +224,7 @@ local function addButton(parent, text, y, color, callback)
 end
 
 -- ============================
--- 1. قسم TP (تيليبورت)
+-- 1. قسم TP
 -- ============================
 local tpFrame = createSection("tp")
 local y = 5
@@ -289,7 +245,7 @@ for _, loc in ipairs(tpLocations) do
 end
 
 -- ============================
--- 2. قسم Speed (السرعة)
+-- 2. قسم Speed
 -- ============================
 local speedFrame = createSection("speed")
 y = 5
@@ -310,7 +266,7 @@ for _, spd in ipairs(speeds) do
 end
 
 -- ============================
--- 3. قسم Def (دفاع)
+-- 3. قسم Def
 -- ============================
 local defFrame = createSection("def")
 y = 5
@@ -327,7 +283,6 @@ end)
 y = y + 35
 
 addButton(defFrame, "🔰 No Fall Damage", y, Color3.fromRGB(255, 200, 0), function()
-    -- محاكاة: منع ضرر السقوط
     humanoid:GetPropertyChangedSignal("Health"):Connect(function()
         if humanoid.Health < 10 then
             humanoid.Health = 100
@@ -343,7 +298,7 @@ addButton(defFrame, "🌀 Anti AFK", y, Color3.fromRGB(255, 200, 0), function()
 end)
 
 -- ============================
--- 4. قسم Kill (قتل)
+-- 4. قسم Kill
 -- ============================
 local killFrame = createSection("kill")
 y = 5
@@ -369,18 +324,9 @@ addButton(killFrame, "💥 Explode", y, Color3.fromRGB(255, 0, 0), function()
     explosion.BlastDamage = 50
     explosion.Parent = game.Workspace
 end)
-y = y + 35
-
-addButton(killFrame, "⚡ Shock", y, Color3.fromRGB(255, 0, 0), function()
-    for _, p in ipairs(game.Players:GetPlayers()) do
-        if p ~= player and p.Character then
-            p.Character:BreakJoints()
-        end
-    end
-end)
 
 -- ============================
--- 5. قسم Misc (متنوع)
+-- 5. قسم Misc (مع أزرار البيضة)
 -- ============================
 local miscFrame = createSection("misc")
 y = 5
@@ -399,6 +345,67 @@ addButton(miscFrame, "🔄 Respawn", y, Color3.fromRGB(200, 0, 200), function()
     char:BreakJoints()
     wait(0.5)
     player:LoadCharacter()
+end)
+y = y + 35
+
+-- ============================
+-- 🔥 أزرار سرقة البيضة وإرجاعها
+-- ============================
+addButton(miscFrame, "🥚 Steal Egg", y, Color3.fromRGB(255, 165, 0), function()
+    -- محاكاة سرقة البيضة
+    local egg = Instance.new("Part")
+    egg.Size = Vector3.new(2, 3, 2)
+    egg.Shape = Enum.PartType.Ball
+    egg.BrickColor = BrickColor.new("Bright yellow")
+    egg.Position = hrp.Position + Vector3.new(0, 5, 0)
+    egg.Anchored = true
+    egg.Parent = game.Workspace
+    
+    -- تأثير سرقة
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://9120393705"
+    sound.Volume = 1
+    sound.Parent = egg
+    sound:Play()
+    
+    -- تحريك البيضة إلى يد اللاعب
+    for i = 1, 20 do
+        egg.CFrame = CFrame.new(hrp.Position + Vector3.new(0, 3, 0) + Vector3.new(math.sin(i/2), i/5, math.cos(i/2)))
+        wait(0.05)
+    end
+    
+    egg:Destroy()
+    print("🥚 Egg stolen!")
+end)
+y = y + 35
+
+addButton(miscFrame, "🔄 Return Egg", y, Color3.fromRGB(0, 255, 255), function()
+    -- محاكاة إرجاع البيضة إلى يد اللاعب
+    local egg = Instance.new("Part")
+    egg.Size = Vector3.new(2, 3, 2)
+    egg.Shape = Enum.PartType.Ball
+    egg.BrickColor = BrickColor.new("Bright yellow")
+    egg.Position = hrp.Position + Vector3.new(0, 10, 0)
+    egg.Anchored = true
+    egg.Parent = game.Workspace
+    
+    -- تأثير إرجاع
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://9120393705"
+    sound.Volume = 1
+    sound.Parent = egg
+    sound:Play()
+    
+    -- تحريك البيضة إلى يد اللاعب
+    for i = 1, 30 do
+        local t = i / 30
+        local pos = Vector3.new(0, 10, 0) * (1 - t) + Vector3.new(0, 3, 0) * t
+        egg.CFrame = CFrame.new(hrp.Position + pos)
+        wait(0.03)
+    end
+    
+    egg:Destroy()
+    print("🔄 Egg returned to hand!")
 end)
 y = y + 35
 
@@ -459,7 +466,6 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
         local delta = input.Position - dragStart
         mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        glow.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X - 10, startPos.Y.Scale, startPos.Y.Offset + delta.Y - 10)
         eyeFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X - 10, startPos.Y.Scale, startPos.Y.Offset + delta.Y - 10)
     end
 end)
@@ -467,6 +473,6 @@ end)
 -- ============================
 -- تشغيل السكربت
 -- ============================
-print("🔥 BATO ULTIMATE UI v10.0 Loaded.")
+print("🔥 BATO ULTIMATE UI v10.2 Loaded.")
 print("👑 Admin: Mohammad_kurdish73")
-print("🌟 All features ready.")
+print("🥚 Egg Steal & Return buttons added.")
